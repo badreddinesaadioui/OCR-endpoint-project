@@ -1,8 +1,11 @@
 streamlit
 mistralai
-openai
+openai>=1.55.0
 pymupdf
 pypdf
+Pillow
 python-dotenv
 replicate
-
+pandas
+plotly
+jsonschema

@@ -1,10 +1,10 @@
 """
 OCR Benchmark: Upload PDF + ground truth → parallel OCR (Mistral, OpenAI Vision, Replicate).
 Metrics: word recall, CER, WER, layout accuracy, cost, speed. Cost from API usage or list price.
-Multi-criteria: Borda count + Condorcet. Results cached locally by CV (filename + content hash).
+Multi-criteria: Borda count + Condorcet. APIs are called fresh each time.
 """
 import base64
-import hashlib
+import csv
 import io
 import json
 import os
@@ -17,24 +17,10 @@ import streamlit as st
 from openai import OpenAI
 
 # ---------------------------------------------------------------------------
-# Local cache (by CV: filename + content hash)
+# Helpers
 # ---------------------------------------------------------------------------
-def _cache_dir():
-    d = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ocr_cache")
-    os.makedirs(d, exist_ok=True)
-    return d
-
-def _cache_key(pdf_bytes: bytes, filename: str) -> str:
-    """Stable key: content hash so same PDF reuses cache even if renamed."""
-    h = hashlib.sha256(pdf_bytes).hexdigest()[:24]
-    safe = re.sub(r"[^\w\-.]", "_", (filename or "document.pdf")[:80])
-    return f"{safe}_{h}"
-
-def _cache_path(cache_key: str) -> str:
-    return os.path.join(_cache_dir(), cache_key + ".json")
-
 def _raw_response_to_json(obj):
-    """Turn API response objects into JSON-serializable dict/list/str for display and cache."""
+    """Turn API response objects into JSON-serializable dict/list/str for display."""
     if obj is None:
         return None
     if isinstance(obj, (str, int, float, bool)):
@@ -50,42 +36,6 @@ def _raw_response_to_json(obj):
     if hasattr(obj, "__dict__"):
         return _raw_response_to_json(vars(obj))
     return str(obj)
-
-def load_cached_results(pdf_bytes: bytes, filename: str) -> Optional[dict]:
-    """Returns cached payload or None. Payload: { filename, content_hash, ground_truth?, results: { model_name: { text, cost_usd, time_seconds, error } }, models: [...] }."""
-    key = _cache_key(pdf_bytes, filename)
-    path = _cache_path(key)
-    if not os.path.isfile(path):
-        return None
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return None
-
-def save_cached_results(pdf_bytes: bytes, filename: str, ground_truth: str, models: list, results: list):
-    """Save results keyed by this CV (filename + content hash)."""
-    key = _cache_key(pdf_bytes, filename)
-    path = _cache_path(key)
-    def _serialize_result(r):
-        d = {"text": r.get("text", ""), "cost_usd": r.get("cost_usd", 0.0), "time_seconds": r.get("time_seconds", 0.0), "error": r.get("error")}
-        if r.get("api_summary") is not None:
-            d["api_summary"] = r["api_summary"]
-        if r.get("raw_api_response") is not None:
-            d["raw_api_response"] = r["raw_api_response"]
-        return d
-    payload = {
-        "filename": filename or "document.pdf",
-        "content_hash": hashlib.sha256(pdf_bytes).hexdigest()[:24],
-        "ground_truth": ground_truth,
-        "models": models,
-        "results": {name: _serialize_result(r) for name, r in zip(models, results)},
-    }
-    try:
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
 
 # ---------------------------------------------------------------------------
 # Secrets (Streamlit reads .streamlit/secrets.toml)
@@ -105,6 +55,29 @@ def get_mistral_key():
 def get_replicate_key():
     # Replicate client expects REPLICATE_API_TOKEN; we support REPLICATE_API_KEY too
     return _get_secret("REPLICATE_API_KEY") or _get_secret("REPLICATE_API_TOKEN")
+
+# ---------------------------------------------------------------------------
+# Database (same as our_database.py: CVtheque library)
+# ---------------------------------------------------------------------------
+DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database")
+SCREENSHOTS_DIR = os.path.join(DB_DIR, "screenshots")
+METADATA_PATH = os.path.join(DB_DIR, "metadata.csv")
+
+@st.cache_data
+def load_db_metadata():
+    """Load CV library metadata (filename, extension, language, layout_type, ...)."""
+    if not os.path.isfile(METADATA_PATH):
+        return []
+    rows = []
+    with open(METADATA_PATH, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row.get("filename"):
+                rows.append(row)
+    return rows
+
+def _screenshot_path(base: str) -> str:
+    return os.path.join(SCREENSHOTS_DIR, f"{base}.png")
 
 # ---------------------------------------------------------------------------
 # Ground truth vs prediction: metrics (word recall, CER, WER, layout)
@@ -152,15 +125,21 @@ def wer(ground_truth: str, predicted: str) -> float:
     return (ed / len(ref_words)) * 100.0
 
 def layout_accuracy(ground_truth: str, predicted: str) -> float:
-    """Layout accuracy: % of GT section headers found in prediction. Sections = lines that look like headers (all caps or short title)."""
+    """Layout accuracy: % of GT section titles found in prediction. Uses only real titles (no '--' or layout decoration)."""
     pred_lower = (predicted or "").lower()
     lines = [ln.strip() for ln in (ground_truth or "").splitlines() if ln.strip()]
     section_headers = []
     for ln in lines:
         if len(ln) > 60:
             continue
-        # All caps or title-like (starts with capital, no trailing punctuation)
-        if ln.isupper() or (ln and ln[0].isupper() and not ln.rstrip().endswith(("," or "."))):
+        # Skip separator/decoration lines (dashes, underscores, etc.)
+        if "--" in ln or "—" in ln:
+            continue
+        letters = sum(1 for c in ln if c.isalpha())
+        if letters < 2 or letters / max(len(ln), 1) < 0.4:  # skip layout-only lines (e.g. "---", "___")
+            continue
+        # Title-like: all caps or starts with capital, no trailing sentence punctuation
+        if ln.isupper() or (ln and ln[0].isupper() and not ln.rstrip().endswith(",") and not ln.rstrip().endswith(".")):
             section_headers.append(ln.strip())
     section_headers = list(dict.fromkeys(section_headers))[:30]
     if not section_headers:
@@ -226,6 +205,86 @@ def pdf_page_count(pdf_bytes: bytes) -> int:
         return n
     except Exception:
         return 0
+
+# ---------------------------------------------------------------------------
+# Image (PNG/JPEG) → single-page PDF (for library image support)
+# ---------------------------------------------------------------------------
+def _image_to_pdf(image_bytes: bytes, filetype: str = "png") -> Optional[bytes]:
+    """Convert image bytes (PNG or JPEG) to a single-page PDF using PyMuPDF. Returns PDF bytes or None."""
+    try:
+        import fitz
+        img_doc = fitz.open(stream=image_bytes, filetype=filetype)
+        if len(img_doc) == 0:
+            img_doc.close()
+            return None
+        w, h = img_doc[0].rect.width, img_doc[0].rect.height
+        img_doc.close()
+        doc = fitz.open()
+        page = doc.new_page(width=w, height=h)
+        page.insert_image(page.rect, stream=image_bytes)
+        pdf_bytes = doc.tobytes()
+        doc.close()
+        return pdf_bytes
+    except Exception:
+        return None
+
+# ---------------------------------------------------------------------------
+# DOCX → PDF (for library DOCX support; requires LibreOffice headless)
+# ---------------------------------------------------------------------------
+def _convert_docx_to_pdf(docx_bytes: bytes) -> tuple[Optional[bytes], Optional[str]]:
+    """Convert DOCX bytes to PDF using LibreOffice headless. Returns (pdf_bytes, None) on success, (None, error_message) on failure."""
+    import subprocess
+    import tempfile
+    tmpdir = os.path.abspath(tempfile.mkdtemp())
+    docx_path = os.path.join(tmpdir, "document.docx")
+    pdf_path = os.path.join(tmpdir, "document.pdf")
+    try:
+        with open(docx_path, "wb") as f:
+            f.write(docx_bytes)
+        # Try LibreOffice: system PATH first, then macOS app bundle
+        candidates = [
+            "libreoffice",
+            "soffice",
+            "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+        ]
+        last_err = None
+        for cmd in candidates:
+            if cmd.startswith("/") and not os.path.isfile(cmd):
+                continue
+            try:
+                result = subprocess.run(
+                    [cmd, "--headless", "--convert-to", "pdf", "--outdir", tmpdir, docx_path],
+                    capture_output=True,
+                    timeout=90,
+                    text=True,
+                    cwd=tmpdir,
+                )
+                if result.returncode != 0:
+                    last_err = (result.stderr or result.stdout or f"Exit code {result.returncode}").strip()[:200]
+                    continue
+                if os.path.isfile(pdf_path):
+                    with open(pdf_path, "rb") as f:
+                        return (f.read(), None)
+                last_err = "LibreOffice did not create document.pdf"
+            except FileNotFoundError:
+                last_err = f"Command not found: {cmd}"
+                continue
+            except subprocess.TimeoutExpired:
+                last_err = "Conversion timed out (90s)"
+                continue
+            except Exception as e:
+                last_err = str(e)[:200]
+                continue
+        return (None, last_err or "LibreOffice not found. Install LibreOffice and add it to PATH, or on Mac install from https://www.libreoffice.org")
+    except Exception as e:
+        return (None, str(e)[:200])
+    finally:
+        try:
+            for f in os.listdir(tmpdir):
+                os.remove(os.path.join(tmpdir, f))
+            os.rmdir(tmpdir)
+        except Exception:
+            pass
 
 # ---------------------------------------------------------------------------
 # Mistral OCR 3
@@ -349,48 +408,38 @@ REPLICATE_COST_TEXT_EXTRACT = 0.0001
 REPLICATE_COST_DEEPSEEK_OCR = 0.006
 REPLICATE_COST_MARKER = 0.01
 
-# Replicate wait: max 60s per request. Retry on timeout (e.g. cold start).
+# Replicate: single request per model; no retries (user can send multiple in parallel).
 REPLICATE_WAIT_SECONDS = 60
-REPLICATE_MAX_RETRIES = 3
-REPLICATE_RETRY_DELAY = 5
 
 def _replicate_run(model: str, input_dict: dict, api_token: str, cost_usd: float = 0.0) -> dict:
-    """Run Replicate model; returns { "text", "cost_usd", "time_seconds", "error", "api_summary", "raw_api_response" }. Retries on timeout."""
+    """Run Replicate model once; returns { "text", "cost_usd", "time_seconds", "error", "api_summary", "raw_api_response" }. No retries—show result or error as soon as it returns."""
     out = {"text": "", "cost_usd": cost_usd, "time_seconds": 0.0, "error": None, "api_summary": None, "raw_api_response": None}
     t0 = time.perf_counter()
     prev = os.environ.get("REPLICATE_API_TOKEN")
-    for attempt in range(REPLICATE_MAX_RETRIES):
-        try:
-            os.environ["REPLICATE_API_TOKEN"] = api_token
-            import replicate
-            raw = replicate.run(model, input=input_dict, wait=REPLICATE_WAIT_SECONDS)
-            out["raw_api_response"] = _raw_response_to_json(raw)
-            if isinstance(raw, str):
-                out["text"] = raw.strip()
-            elif isinstance(raw, dict) and "markdown" in raw:
-                out["text"] = (raw["markdown"] or "").strip()
-            elif isinstance(raw, (list, tuple)):
-                out["text"] = "\n".join(str(x) for x in raw).strip()
-            elif hasattr(raw, "output") and isinstance(getattr(raw, "output"), str):
-                out["text"] = getattr(raw, "output").strip()
-            elif hasattr(raw, "markdown"):
-                out["text"] = (getattr(raw, "markdown") or "").strip()
-            else:
-                out["text"] = str(raw).strip()
-            break
-        except Exception as e:
-            last_error = str(e).strip()
-            is_timeout = "timed out" in last_error.lower() or "timeout" in last_error.lower()
-            if is_timeout and attempt < REPLICATE_MAX_RETRIES - 1:
-                time.sleep(REPLICATE_RETRY_DELAY)
-                continue
-            out["error"] = "Replicate timed out after %d tries." % REPLICATE_MAX_RETRIES if is_timeout else last_error
-            break
-        finally:
-            if prev is None:
-                os.environ.pop("REPLICATE_API_TOKEN", None)
-            else:
-                os.environ["REPLICATE_API_TOKEN"] = prev
+    try:
+        os.environ["REPLICATE_API_TOKEN"] = api_token
+        import replicate
+        raw = replicate.run(model, input=input_dict, wait=REPLICATE_WAIT_SECONDS)
+        out["raw_api_response"] = _raw_response_to_json(raw)
+        if isinstance(raw, str):
+            out["text"] = raw.strip()
+        elif isinstance(raw, dict) and "markdown" in raw:
+            out["text"] = (raw["markdown"] or "").strip()
+        elif isinstance(raw, (list, tuple)):
+            out["text"] = "\n".join(str(x) for x in raw).strip()
+        elif hasattr(raw, "output") and isinstance(getattr(raw, "output"), str):
+            out["text"] = getattr(raw, "output").strip()
+        elif hasattr(raw, "markdown"):
+            out["text"] = (getattr(raw, "markdown") or "").strip()
+        else:
+            out["text"] = str(raw).strip()
+    except Exception as e:
+        out["error"] = str(e).strip()
+    finally:
+        if prev is None:
+            os.environ.pop("REPLICATE_API_TOKEN", None)
+        else:
+            os.environ["REPLICATE_API_TOKEN"] = prev
     out["time_seconds"] = time.perf_counter() - t0
     out["api_summary"] = {
         "provider": "Replicate",
@@ -403,21 +452,51 @@ def _replicate_run(model: str, input_dict: dict, api_token: str, cost_usd: float
     }
     return out
 
-def _replicate_image_data_uri(image_bytes: bytes) -> str:
-    """Build data URI for Replicate (accepts data URI for images <1MB)."""
-    return "data:image/png;base64," + base64.b64encode(image_bytes).decode("utf-8")
+# Replicate data URI limit (1MB); we target ~700KB to leave margin
+REPLICATE_DATA_URI_MAX = 1_000_000
+REPLICATE_IMAGE_TARGET_BYTES = 700_000
+
+def _replicate_image_data_uri_under_limit(image_bytes: bytes) -> Optional[str]:
+    """Build a data URI for Replicate under 1MB by resizing/compressing the image if needed."""
+    data_uri = "data:image/png;base64," + base64.b64encode(image_bytes).decode("utf-8")
+    if len(data_uri) <= REPLICATE_DATA_URI_MAX:
+        return data_uri
+    try:
+        from PIL import Image
+    except ImportError:
+        return None
+    img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    w, h = img.size
+    for scale in [0.7, 0.5, 0.35, 0.25, 0.2, 0.15]:
+        nw, nh = int(w * scale), int(h * scale)
+        if nw < 100 or nh < 100:
+            break
+        out = io.BytesIO()
+        img.resize((nw, nh), Image.Resampling.LANCZOS).save(out, format="PNG", optimize=True)
+        if out.tell() <= REPLICATE_IMAGE_TARGET_BYTES:
+            data_uri = "data:image/png;base64," + base64.b64encode(out.getvalue()).decode("utf-8")
+            if len(data_uri) <= REPLICATE_DATA_URI_MAX:
+                return data_uri
+    for quality in [85, 70, 55, 40]:
+        out = io.BytesIO()
+        img.resize((int(w * 0.5), int(h * 0.5)), Image.Resampling.LANCZOS).save(out, format="JPEG", quality=quality, optimize=True)
+        if out.tell() <= REPLICATE_IMAGE_TARGET_BYTES:
+            data_uri = "data:image/jpeg;base64," + base64.b64encode(out.getvalue()).decode("utf-8")
+            if len(data_uri) <= REPLICATE_DATA_URI_MAX:
+                return data_uri
+    return None
 
 # Versioned model IDs (required by Replicate API; unversioned can return 404)
 REPLICATE_TEXT_EXTRACT_OCR = "abiruyt/text-extract-ocr:a524caeaa23495bc9edc805ab08ab5fe943afd3febed884a4f3747aa32e9cd61"
 
 def run_replicate_text_extract_ocr(pdf_bytes: bytes, api_token: str) -> dict:
-    """abiruyt/text-extract-ocr: image → plain text. Uses first page; pass data URI (no upload needed)."""
+    """abiruyt/text-extract-ocr: image → plain text. Uses first page; resized if needed to stay under 1MB data URI."""
     images = pdf_to_images(pdf_bytes)
     if not images:
         return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "No pages in PDF"}
-    data_uri = _replicate_image_data_uri(images[0])
-    if len(data_uri) > 1_000_000:
-        return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "First page image too large for data URI (>1MB). Try a smaller PDF."}
+    data_uri = _replicate_image_data_uri_under_limit(images[0])
+    if not data_uri:
+        return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "First page image could not be compressed under 1MB. Install Pillow (pip install Pillow) or try a smaller PDF."}
     input_dict = {"image": data_uri}
     return _replicate_run(REPLICATE_TEXT_EXTRACT_OCR, input_dict, api_token, REPLICATE_COST_TEXT_EXTRACT)
 
@@ -425,13 +504,13 @@ def run_replicate_text_extract_ocr(pdf_bytes: bytes, api_token: str) -> dict:
 REPLICATE_DEEPSEEK_OCR_VERSION = "lucataco/deepseek-ocr:cb3b474fbfc56b1664c8c7841550bccecbe7b74c30e45ce938ffca1180b4dff5"
 
 def run_replicate_deepseek_ocr(pdf_bytes: bytes, api_token: str) -> dict:
-    """lucataco/deepseek-ocr: image → markdown. Uses first page; pass data URI (no upload)."""
+    """lucataco/deepseek-ocr: image → markdown. Uses first page; resized if needed to stay under 1MB data URI."""
     images = pdf_to_images(pdf_bytes)
     if not images:
         return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "No pages in PDF"}
-    data_uri = _replicate_image_data_uri(images[0])
-    if len(data_uri) > 1_000_000:
-        return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "First page image too large for data URI (>1MB). Try a smaller PDF."}
+    data_uri = _replicate_image_data_uri_under_limit(images[0])
+    if not data_uri:
+        return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "First page image could not be compressed under 1MB. Install Pillow (pip install Pillow) or try a smaller PDF."}
     input_dict = {"image": data_uri, "task_type": "Convert to Markdown"}
     return _replicate_run(REPLICATE_DEEPSEEK_OCR_VERSION, input_dict, api_token, REPLICATE_COST_DEEPSEEK_OCR)
 
@@ -439,6 +518,44 @@ def run_replicate_marker(pdf_bytes: bytes, api_token: str) -> dict:
     """datalab-to/marker: PDF → markdown. Full document."""
     input_dict = {"file": io.BytesIO(pdf_bytes), "mode": "fast"}
     return _replicate_run("datalab-to/marker", input_dict, api_token, REPLICATE_COST_MARKER)
+
+# ---------------------------------------------------------------------------
+# OCR models (for selector: id -> label; build tasks from selected ids)
+# ---------------------------------------------------------------------------
+def _ocr_models_available(has_replicate: bool) -> list[tuple[str, str]]:
+    """Return list of (id, display_label) for the multiselect. Short labels avoid truncation in chips."""
+    out = [
+        ("mistral-ocr-3", "Mistral OCR 3"),
+        ("openai-gpt4o-mini", "OpenAI GPT-4o-mini"),
+        ("openai-gpt4o", "OpenAI GPT-4o"),
+    ]
+    if has_replicate:
+        out.extend([
+            ("replicate-text-extract", "text-extract-ocr"),
+            ("replicate-deepseek", "deepseek-ocr"),
+            ("replicate-marker", "marker"),
+        ])
+    return out
+
+
+def _ocr_build_tasks(selected_ids: list[str], pdf_bytes: bytes, filename: str, openai_key: str, mistral_key: str, replicate_key: Optional[str]) -> list:
+    """Build list of (name, fn, args) for selected model ids."""
+    tasks = []
+    for mid in selected_ids:
+        if mid == "mistral-ocr-3":
+            tasks.append(("Mistral OCR 3", run_mistral_ocr, (pdf_bytes, filename, mistral_key)))
+        elif mid == "openai-gpt4o-mini":
+            tasks.append(("OpenAI GPT-4o-mini Vision", run_openai_vision_ocr, (pdf_bytes, openai_key, True)))
+        elif mid == "openai-gpt4o":
+            tasks.append(("OpenAI GPT-4o Vision", run_openai_vision_ocr, (pdf_bytes, openai_key, False)))
+        elif mid == "replicate-text-extract" and replicate_key:
+            tasks.append(("Replicate text-extract-ocr", run_replicate_text_extract_ocr, (pdf_bytes, replicate_key)))
+        elif mid == "replicate-deepseek" and replicate_key:
+            tasks.append(("Replicate deepseek-ocr", run_replicate_deepseek_ocr, (pdf_bytes, replicate_key)))
+        elif mid == "replicate-marker" and replicate_key:
+            tasks.append(("Replicate marker", run_replicate_marker, (pdf_bytes, replicate_key)))
+    return tasks
+
 
 # ---------------------------------------------------------------------------
 # Multi-criteria: Borda and Condorcet
@@ -512,6 +629,16 @@ def render_model_result(name: str, m: dict, r: dict, key_prefix: str) -> None:
         st.code(extracted, language=None)
 
 # ---------------------------------------------------------------------------
+# Shared state for progressive results (threads write here; survives st.rerun())
+# ---------------------------------------------------------------------------
+def _ocr_thread_target(idx: int, fn, args: tuple, results_list: list) -> None:
+    """Run fn(*args) and store result in results_list[idx]."""
+    try:
+        results_list[idx] = fn(*args)
+    except Exception as e:
+        results_list[idx] = {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": str(e), "api_summary": None}
+
+# ---------------------------------------------------------------------------
 # Streamlit UI
 # ---------------------------------------------------------------------------
 st.title("OCR Benchmark: Mistral, OpenAI Vision, Replicate")
@@ -523,8 +650,20 @@ if not openai_key:
     st.error("Missing OPENAI_API_KEY in `.streamlit/secrets.toml`.")
 if not mistral_key:
     st.error("Missing MISTRAL_API_KEY in `.streamlit/secrets.toml`.")
-if replicate_key:
-    st.caption("All models run in parallel (one thread per model). Results appear as each finishes.")
+st.caption("All OCR requests are sent in parallel (one thread per model). No model waits for another. Each column keeps loading until that model returns—success or error—then updates immediately.")
+
+# Model selector (like LLM Parsing Benchmark)
+ocr_models_options = _ocr_models_available(replicate_key is not None and bool(replicate_key))
+ocr_default = [m[0] for m in ocr_models_options if m[0] != "openai-gpt4o"]
+if not ocr_default:
+    ocr_default = [m[0] for m in ocr_models_options]
+selected_ocr_models = st.multiselect(
+    "Models to run (in parallel, 1 thread per model)",
+    options=[m[0] for m in ocr_models_options],
+    default=ocr_default,
+    format_func=lambda x: next((m[1] for m in ocr_models_options if m[0] == x), x),
+    key="ocr_models_select",
+)
 
 with st.expander("Metrics & multi-criteria weights (Borda / ranking)"):
     st.markdown("""
@@ -547,169 +686,239 @@ with st.expander("Metrics & multi-criteria weights (Borda / ranking)"):
         total_w = 1.0
     st.caption(f"Sum = {total_w:.2f}. Borda uses these weights; Condorcet uses majority of criteria.")
 
-col_left, col_right = st.columns(2)
-with col_left:
-    uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], key="pdf")
-with col_right:
-    ground_truth = st.text_area(
-        "Ground truth (perfect OCR text)",
-        height=120,
-        placeholder="Paste the reference text here (exact words to compare against).",
-        key="gt",
-    )
+input_mode = st.radio(
+    "Input",
+    options=["Upload PDF", "Use from library"],
+    horizontal=True,
+    key="ocr_input_mode",
+)
 
-force_rerun = st.checkbox("Force re-run (ignore cache)", value=False, help="Re-call all APIs instead of loading from local cache for this CV.")
+uploaded_file = None
+ground_truth = ""
+pdf_bytes = None
+filename = None
+library_row = None
+
+if input_mode == "Upload PDF":
+    col_left, col_right = st.columns(2)
+    with col_left:
+        uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], key="pdf")
+    with col_right:
+        ground_truth = st.text_area(
+            "Ground truth (perfect OCR text)",
+            height=120,
+            placeholder="Paste the reference text here (exact words to compare against).",
+            key="gt",
+        )
+    if uploaded_file:
+        pdf_bytes = uploaded_file.getvalue()
+        filename = uploaded_file.name or "document.pdf"
+else:
+    # Use from library (same CVtheque as our_database.py)
+    db_metadata = load_db_metadata()
+    if not db_metadata:
+        st.warning("No CV library found (database/metadata.csv). Use **Upload PDF** or add the database.")
+    else:
+        options = [f"{r['filename']} ({r.get('language', '')}, {r.get('layout_type', '')})" for r in db_metadata]
+        choice = st.selectbox("Select a CV from the library", options=options, key="library_cv")
+        if choice:
+            idx = options.index(choice)
+            library_row = db_metadata[idx]
+            filename = library_row["filename"]
+            base, ext = os.path.splitext(filename)
+            base = base.strip()
+            ext = ext.lower().lstrip(".")
+            doc_path = os.path.join(DB_DIR, filename)
+            txt_path = os.path.join(DB_DIR, f"{base}.txt")
+            shot_path = _screenshot_path(base)
+
+            # Show display + transcription (same as our_database modal)
+            st.subheader("Document & transcription")
+            col_doc, col_txt = st.columns([1, 1])
+            with col_doc:
+                st.caption("Document")
+                if os.path.isfile(shot_path):
+                    img_path = shot_path
+                elif os.path.isfile(doc_path) and ext in ("png", "jpg", "jpeg"):
+                    img_path = doc_path
+                else:
+                    img_path = None
+                if img_path:
+                    mime = "image/jpeg" if img_path.lower().endswith((".jpg", ".jpeg")) else "image/png"
+                    with open(img_path, "rb") as f:
+                        b64 = base64.b64encode(f.read()).decode()
+                    st.markdown(
+                        f'<div style="max-width: 320px;"><img src="data:{mime};base64,{b64}" style="width: 100%; height: auto;" alt="CV" /></div>',
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.caption(f"No preview for {filename}")
+            with col_txt:
+                st.caption("Transcription (ground truth)")
+                if os.path.isfile(txt_path):
+                    with open(txt_path, "r", encoding="utf-8") as f:
+                        ground_truth = f.read()
+                    # Key per CV so changing selection updates the text area
+                    st.text_area("Ground truth", ground_truth, height=200, disabled=False, key=f"gt_library_{base}")
+                else:
+                    st.info(f"No {base}.txt in database.")
+                    ground_truth = ""
+
+            # OCR benchmark: PDF directly; DOCX → PDF (LibreOffice); PNG/JPG → single-page PDF (PyMuPDF)
+            if ext == "pdf" and os.path.isfile(doc_path):
+                try:
+                    with open(doc_path, "rb") as f:
+                        pdf_bytes = f.read()
+                except Exception:
+                    pdf_bytes = None
+                    st.error(f"Could not read {filename}.")
+            elif ext == "docx" and os.path.isfile(doc_path):
+                try:
+                    with open(doc_path, "rb") as f:
+                        docx_bytes = f.read()
+                    pdf_bytes, conv_err = _convert_docx_to_pdf(docx_bytes)
+                    if pdf_bytes is not None:
+                        filename = f"{base}.pdf"  # OCR APIs receive PDF content with .pdf name
+                    elif os.path.isfile(shot_path):
+                        # Fallback: use library screenshot (no LibreOffice needed)
+                        with open(shot_path, "rb") as f:
+                            image_bytes = f.read()
+                        pdf_bytes = _image_to_pdf(image_bytes, filetype="png")
+                        if pdf_bytes is not None:
+                            filename = f"{base}.pdf"
+                            st.caption("Using library screenshot for this DOCX (no LibreOffice needed).")
+                        else:
+                            st.error("DOCX → PDF conversion failed: " + (conv_err or "Unknown error"))
+                            st.caption("Screenshot fallback also failed. Install **LibreOffice** (e.g. Mac: `brew install --cask libreoffice`) for DOCX support.")
+                    else:
+                        st.error("DOCX → PDF conversion failed: " + (conv_err or "Unknown error"))
+                        st.caption("To use DOCX: install **LibreOffice** (e.g. Mac: `brew install --cask libreoffice`, or download from libreoffice.org). Or add a screenshot for this CV in `database/screenshots/{base}.png` for a fallback.")
+                except Exception as e:
+                    pdf_bytes = None
+                    st.error(f"Could not read or convert {filename}: {e}")
+            elif ext in ("png", "jpg", "jpeg") and os.path.isfile(doc_path):
+                try:
+                    with open(doc_path, "rb") as f:
+                        image_bytes = f.read()
+                    filetype = "png" if ext == "png" else "jpeg"
+                    pdf_bytes = _image_to_pdf(image_bytes, filetype=filetype)
+                    if pdf_bytes is None:
+                        st.error(f"Could not convert {filename} (image) to PDF.")
+                    else:
+                        filename = f"{base}.pdf"
+                except Exception as e:
+                    pdf_bytes = None
+                    st.error(f"Could not read or convert {filename}: {e}")
+            else:
+                pdf_bytes = None
+                st.caption(f"OCR benchmark supports **PDF**, **DOCX**, and **PNG/JPG** from the library. This CV is **{ext}**. Choose a supported file or upload a PDF.")
+
 analyze = st.button("Analyze", type="primary")
 
 if analyze and openai_key and mistral_key:
-    if not uploaded_file:
-        st.warning("Upload a PDF first.")
+    if input_mode == "Use from library":
+        # Same key as the text area (per-CV) so we read the current selection's value
+        library_choice = st.session_state.get("library_cv", "")
+        lib_base = os.path.splitext((library_choice.split(" ")[0] or "").strip())[0] if library_choice else ""
+        ground_truth = st.session_state.get(f"gt_library_{lib_base}", ground_truth or "")
+    if not selected_ocr_models:
+        st.warning("Select at least one OCR model to run.")
+    elif pdf_bytes is None or not filename:
+        st.warning("Provide a PDF, or select a PDF / DOCX / PNG / JPG from the library (or upload a PDF).")
     elif not (ground_truth and ground_truth.strip()):
-        st.warning("Paste ground truth text to compute accuracy.")
+        st.warning("Ground truth is required. Paste it (Upload mode) or select a CV that has a transcription in the library.")
     else:
-        pdf_bytes = uploaded_file.getvalue()
-        filename = uploaded_file.name or "document.pdf"
-
-        # Try cache first (same CV = same filename + content hash)
-        loaded_from_cache = False
-        if not force_rerun:
-            cached = load_cached_results(pdf_bytes, filename)
-            if cached and cached.get("models") and cached.get("results"):
-                models = cached["models"]
-                results = [cached["results"].get(name, {}) for name in models]
-                loaded_from_cache = True
-                st.info(f"Results loaded from local cache for: **{cached.get('filename', filename)}**. Check **Force re-run** to call APIs again.")
-
-        if not loaded_from_cache:
-            # Worker thread: runs OCR in its own thread, stores result on self (no st.* in thread)
-            class OCRWorkerThread(Thread):
-                def __init__(self, name, fn, args):
-                    super().__init__()
-                    self.name = name
-                    self.fn = fn
-                    self.args = args
-                    self.return_value = None
-
-                def run(self):
-                    try:
-                        self.return_value = self.fn(*self.args)
-                    except Exception as e:
-                        self.return_value = {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": str(e), "api_summary": None}
-
-            # Build all tasks (each will run in its own thread)
-            tasks = [
-                ("Mistral OCR 3", run_mistral_ocr, (pdf_bytes, filename, mistral_key)),
-                ("OpenAI GPT-4o-mini Vision", run_openai_vision_ocr, (pdf_bytes, openai_key, True)),
-            ]
-            if replicate_key:
-                tasks.extend([
-                    ("Replicate text-extract-ocr", run_replicate_text_extract_ocr, (pdf_bytes, replicate_key)),
-                    ("Replicate deepseek-ocr", run_replicate_deepseek_ocr, (pdf_bytes, replicate_key)),
-                    ("Replicate marker", run_replicate_marker, (pdf_bytes, replicate_key)),
-                ])
+        tasks = _ocr_build_tasks(selected_ocr_models, pdf_bytes, filename, openai_key, mistral_key, replicate_key)
+        if not tasks:
+            st.warning("No valid tasks for selected models (Replicate models require REPLICATE_API_KEY).")
+        else:
             models = [t[0] for t in tasks]
             n_tasks = len(tasks)
-            n_cols = min(5, n_tasks)
-            cols = st.columns(n_cols)
-
-            st.subheader("Results")
-            # One placeholder per task (Streamlit pattern: create placeholders before starting threads)
-            placeholders = []
-            for i in range(n_tasks):
-                with cols[i]:
-                    st.markdown(f"### {models[i]}")
-                    placeholders.append(st.empty())
-
-            # Start one thread per task
-            threads = [OCRWorkerThread(name, fn, args) for name, fn, args in tasks]
-            for t in threads:
-                t.start()
-
-            # Poll from main script thread: each column gets its own spinner until its thread finishes
             results = [None] * n_tasks
-            thread_done = [False] * n_tasks
-            loop_count = 0
-            while not all(thread_done):
-                for i in range(n_tasks):
-                    if not thread_done[i] and not threads[i].is_alive():
-                        results[i] = threads[i].return_value
-                        thread_done[i] = True
-                    with placeholders[i]:
-                        if results[i] is not None:
-                            m = word_metrics(ground_truth, results[i].get("text", "") or "")
-                            m["time_seconds"] = results[i].get("time_seconds", 0.0)
-                            m["cost_usd"] = results[i].get("cost_usd", 0.0)
-                            m["text"] = results[i].get("text", "")
-                            render_model_result(models[i], m, results[i], "run_%s_%s" % (i, models[i]))
-                        else:
-                            with st.spinner(f"Running {models[i]}…"):
-                                st.caption("API call in progress…")
-                                time.sleep(0.1)  # brief pause so spinner is visible; avoid blocking UI
-                loop_count += 1
-                time.sleep(0.2)
-            for t in threads:
-                t.join()
-
-            save_cached_results(pdf_bytes, filename, ground_truth, models, results)
-
-        # Build metrics_list for Best model section
-        metrics_list = []
-        for i, (name, r) in enumerate(zip(models, results)):
-            m = word_metrics(ground_truth, r.get("text", "") or "")
-            m["name"] = name
-            m["cost_usd"] = r.get("cost_usd", 0.0)
-            m["time_seconds"] = r.get("time_seconds", 0.0)
-            m["error"] = r.get("error")
-            m["text"] = r.get("text", "")
-            metrics_list.append(m)
-
-        # Persist results so they stay visible after Streamlit reruns (button is True only once)
-        st.session_state["ocr_results"] = {
-            "models": models,
-            "results": results,
-            "metrics_list": metrics_list,
-        }
-
-        # When loaded from cache we didn't use placeholders; show Results here (metrics + raw API expander)
-        if loaded_from_cache:
+            threads = []
+            for i, (name, fn, args) in enumerate(tasks):
+                t = Thread(target=_ocr_thread_target, args=(i, fn, args, results))
+                t.daemon = True
+                t.start()
+                threads.append(t)
             st.subheader("Results")
-            n_cols = min(5, len(models))
-            cols = st.columns(n_cols)
-            for i in range(len(models)):
-                with cols[i]:
-                    st.markdown(f"### {models[i]}")
-                    render_model_result(models[i], metrics_list[i], results[i], "cached_%s_%s" % (models[i], i))
+            st.caption("Running all models in parallel. Waiting for API responses…")
+            with st.spinner("Waiting for API response…"):
+                for t in threads:
+                    t.join()
+            metrics_list = []
+            for i, (name, r) in enumerate(zip(models, results)):
+                m = word_metrics(ground_truth, r.get("text", "") or "")
+                m["name"] = name
+                m["cost_usd"] = r.get("cost_usd", 0.0)
+                m["time_seconds"] = r.get("time_seconds", 0.0)
+                m["error"] = r.get("error")
+                m["text"] = r.get("text", "")
+                metrics_list.append(m)
+            st.session_state["ocr_results"] = {
+                "models": models,
+                "results": results,
+                "metrics_list": metrics_list,
+            }
+            st.rerun()
 
-        # Dedicated section: Best model (Borda / Condorcet) with title, counts, and analysis
+else:
+    # Show persisted results (summary table + per-model cards + Borda/Condorcet)
+    if "ocr_results" in st.session_state:
+        data = st.session_state["ocr_results"]
+        st.subheader("Results")
+        # Summary table (like LLM Parsing Benchmark)
+        table_rows = []
+        for i, name in enumerate(data["models"]):
+            m = data["metrics_list"][i]
+            table_rows.append({
+                "Model": name,
+                "Time (s)": f"{m['time_seconds']:.2f}",
+                "Cost ($)": f"{m['cost_usd']:.4f}",
+                "CER (%)": f"{m['cer_pct']:.1f}",
+                "WER (%)": f"{m['wer_pct']:.1f}",
+                "Layout (%)": f"{m['layout_accuracy_pct']:.1f}",
+                "Error": m.get("error") or "—",
+            })
+        st.dataframe(table_rows, use_container_width=True, hide_index=True)
+        # Per-model cards (metrics + raw API + extracted text)
+        n_cols = min(5, len(data["models"]))
+        cols = st.columns(n_cols)
+        for i in range(len(data["models"])):
+            with cols[i]:
+                st.markdown(f"### {data['models'][i]}")
+                render_model_result(data["models"][i], data["metrics_list"][i], data["results"][i], "res_%s_%s" % (data["models"][i], i))
         st.divider()
         st.subheader("Best model (Borda / Condorcet)")
+        metrics_list = data["metrics_list"]
         valid = [m for m in metrics_list if m["error"] is None]
         if len(valid) >= 2:
+            total_w = st.session_state.get("w_cer", 0.2) + st.session_state.get("w_wer", 0.2) + st.session_state.get("w_layout", 0.2) + st.session_state.get("w_speed", 0.2) + st.session_state.get("w_cost", 0.2)
+            if total_w <= 0:
+                total_w = 1.0
+            w_cer, w_wer = st.session_state.get("w_cer", 0.2), st.session_state.get("w_wer", 0.2)
+            w_layout, w_speed, w_cost = st.session_state.get("w_layout", 0.2), st.session_state.get("w_speed", 0.2), st.session_state.get("w_cost", 0.2)
+            weights_norm = [w_cer / total_w, w_wer / total_w, w_layout / total_w, w_speed / total_w, w_cost / total_w]
             cer_scores = [-m["cer_pct"] for m in valid]
             wer_scores = [-m["wer_pct"] for m in valid]
             layout_scores = [m["layout_accuracy_pct"] for m in valid]
             speed_scores = [-m["time_seconds"] for m in valid]
             cost_scores = [-m["cost_usd"] for m in valid]
-            weights_norm = [w_cer / total_w, w_wer / total_w, w_layout / total_w, w_speed / total_w, w_cost / total_w]
             scores_per_criterion = [cer_scores, wer_scores, layout_scores, speed_scores, cost_scores]
             higher_better = [True, True, True, True, True]
-
             borda_scores = borda_rank(scores_per_criterion, weights_norm)
             condorcet_counts = condorcet_wins(scores_per_criterion, higher_better)
             names_valid = [m["name"] for m in valid]
-
             best_borda_idx = max(range(len(borda_scores)), key=lambda i: borda_scores[i])
             best_condorcet_idx = max(range(len(condorcet_counts)), key=lambda i: condorcet_counts[i])
             best_borda_name = names_valid[best_borda_idx]
             best_condorcet_name = names_valid[best_condorcet_idx]
-
             st.markdown("**Borda (weighted ranking)**")
             st.markdown(f"Best model: **{best_borda_name}** (score: {borda_scores[best_borda_idx]:.2f}).")
             st.markdown("Scores by model (higher = better):")
             for i in range(len(valid)):
                 st.markdown(f"- {names_valid[i]}: **{borda_scores[i]:.2f}**")
             st.caption("Borda: each criterion contributes weighted points by rank; scores are summed.")
-
             st.markdown("---")
             st.markdown("**Condorcet (majority of criteria)**")
             st.markdown(f"Best model: **{best_condorcet_name}** (won {condorcet_counts[best_condorcet_idx]} of 5 criteria).")
@@ -717,7 +926,6 @@ if analyze and openai_key and mistral_key:
             for i in range(len(valid)):
                 st.markdown(f"- {names_valid[i]}: **{condorcet_counts[i]}** criteria")
             st.caption("Condorcet: for each criterion the best model gets a win; the model that wins the most criteria is the Condorcet winner.")
-
             st.markdown("---")
             st.markdown("**Analysis**")
             if best_borda_name == best_condorcet_name:
@@ -726,18 +934,3 @@ if analyze and openai_key and mistral_key:
                 st.info(f"**Borda** favours **{best_borda_name}** (best weighted overall score). **Condorcet** favours **{best_condorcet_name}** (won most criteria). Use Borda for a single balanced recommendation, or Condorcet if you prefer the model that wins the most individual metrics.")
         else:
             st.info("Need at least two successful runs to compare.")
-
-        if not replicate_key:
-            st.caption("REPLICATE_API_KEY not set. Add it in secrets to run text-extract-ocr, deepseek-ocr, and marker.")
-
-else:
-    # Show persisted results (metrics + raw API expander) so they stay visible after reruns
-    if "ocr_results" in st.session_state:
-        data = st.session_state["ocr_results"]
-        st.subheader("Results")
-        n_cols = min(5, len(data["models"]))
-        cols = st.columns(n_cols)
-        for i in range(len(data["models"])):
-            with cols[i]:
-                st.markdown(f"### {data['models'][i]}")
-                render_model_result(data["models"][i], data["metrics_list"][i], data["results"][i], "res_%s_%s" % (data["models"][i], i))
