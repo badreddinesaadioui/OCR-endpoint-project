@@ -1,0 +1,10 @@
+# OCR benchmark local cache (per-CV results)
+ocr_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.streamlit/secrets.toml

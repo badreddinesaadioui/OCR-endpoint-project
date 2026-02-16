@@ -1,0 +1,8 @@
+streamlit
+mistralai
+openai
+pymupdf
+pypdf
+python-dotenv
+replicate
+
