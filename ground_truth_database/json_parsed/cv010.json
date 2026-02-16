@@ -1,0 +1,48 @@
+{
+  "linkedin_url": "www.reallygreatsite.com",
+  "name": "Zina Nassar",
+  "location": "Giza, 12345",
+  "about": "Marketing professional with over 10 years of experience delivering data-driven strategies for multi-channel campaigns.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Marketing Strategist",
+      "institution_name": "Future Advertising and Digital Marketing Co",
+      "linkedin_url": null,
+      "from_date": "2033",
+      "to_date": "Present",
+      "duration": null,
+      "location": null,
+      "description": "Led development and execution of marketing strategies that increased brand awareness by 45% and revenue growth by 38%."
+    },
+    {
+      "position_title": "Marketing Director",
+      "institution_name": "Kasab International Co",
+      "linkedin_url": null,
+      "from_date": "2033",
+      "to_date": "2032",
+      "duration": null,
+      "location": null,
+      "description": "Successfully executed marketing campaigns that increased lead generation by 30% and conversion rates by 20% in one year."
+    },
+    {
+      "position_title": "Marketing Assistant",
+      "institution_name": "Nora Lashin for Decor Design",
+      "linkedin_url": null,
+      "from_date": "2032",
+      "to_date": "2030",
+      "duration": null,
+      "location": null,
+      "description": "Supported marketing team in industry and competitor research. Helped create marketing materials including social media and email newsletters."
+    }
+  ],
+  "educations": [
+    {"degree": "Master in Marketing", "institution_name": "Cairo University", "linkedin_url": null, "from_date": "2031", "to_date": "2028", "duration": null, "location": null, "description": "Honors, Best thesis award"},
+    {"degree": "Bachelor of Commerce, Business Administration", "institution_name": "Faculty of Commerce", "linkedin_url": null, "from_date": "2028", "to_date": "2024", "duration": null, "location": null, "description": "Honor roll, Magazine editor-in-chief"}
+  ],
+  "skills": [],
+  "projects": [],
+  "interests": [],
+  "accomplishments": ["Case competition winner 2027", "Digital Marketing Certificate 2029"],
+  "contacts": ["01001234567", "hello@reallygreatsite.com"]
+}

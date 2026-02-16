@@ -1,0 +1,81 @@
+{
+  "linkedin_url": null,
+  "name": "Juliette Regimbal",
+  "location": "Montréal QC",
+  "about": "Ph.D. candidate in Electrical Engineering at McGill, research in human-computer interaction focused on audio-haptic design tools and web accessibility for blind and low-vision users.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Auxiliaire d'enseignement",
+      "institution_name": "Université McGill",
+      "linkedin_url": null,
+      "from_date": "2021",
+      "to_date": "Présent",
+      "duration": null,
+      "location": "Montréal QC",
+      "description": "AE en Interaction humain-machine, Systèmes embarqués, Haptique, et Traitement parallèle. Conférences invitées sur l'haptique pour le cours d'Interaction humain-machine à McGill, 2022-2024. FACC 511 - Instructional Design for Engineering Education."
+    },
+    {
+      "position_title": "Responsable d'architecture",
+      "institution_name": "Projet IMAGE, Université McGill",
+      "linkedin_url": null,
+      "from_date": "2023",
+      "to_date": "Présent",
+      "duration": null,
+      "location": null,
+      "description": "Conçu et implémenté l'architecture logiciel distribué avec Docker, Python, Typescript. Collaboration avec développeurs et chercheurs en IHM; mentorat des stagiaires."
+    },
+    {
+      "position_title": "Consultante indépendante",
+      "institution_name": "Measuring Polyphony, Université Brandeis",
+      "linkedin_url": null,
+      "from_date": null,
+      "to_date": null,
+      "duration": null,
+      "location": null,
+      "description": "Développé l'éditeur Measuring Polyphony avec Typescript, Angular. Conçu et évalué itérativement les fonctionnalités pour répondre aux besoins des utilisateurs."
+    },
+    {
+      "position_title": "Assistante de recherche occasionnelle",
+      "institution_name": "Ecole de musique Schulich, Université McGill",
+      "linkedin_url": null,
+      "from_date": "2018",
+      "to_date": "2020",
+      "duration": null,
+      "location": "Montréal QC",
+      "description": "Travaillé avec des parties prenantes pour créer des applications pour la reconnaissance optique de la musique. Contribué à Verovio (C++), Neon (Typescript). Maintenu applications serveurs Python."
+    },
+    {
+      "position_title": "Stagiaire",
+      "institution_name": "Systèmes électroniques Matrox Ltée",
+      "linkedin_url": null,
+      "from_date": "Été 2016",
+      "to_date": null,
+      "duration": null,
+      "location": "Dorval QC",
+      "description": null
+    }
+  ],
+  "educations": [
+    {"degree": "Ph.D. Génie électrique", "institution_name": "Université McGill", "linkedin_url": null, "from_date": "2021", "to_date": "Présent", "duration": null, "location": "Montréal QC", "description": "Recherche en interaction humain-machine axée sur les outils de conception audio-haptique et l'accessibilité web pour les personnes aveugles et malvoyantes. Supervisée par Professeur Jeremy Cooperstock au Shared Reality Lab."},
+    {"degree": "B.Ing. Génie informatique", "institution_name": "Université McGill", "linkedin_url": null, "from_date": "2015", "to_date": "2020", "duration": null, "location": "Montréal QC", "description": null}
+  ],
+  "skills": [
+    {"category": "Enseignement", "items": ["Conception de cours", "Apprentissage active", "Pédagogie inversée", "Understanding by design", "Universal design for learning"]},
+    {"category": "Langages de programmation", "items": ["JavaScript", "Python", "HTML/CSS", "Java", "C/C++", "SuperCollider", "Rust", "Pure Data"]},
+    {"category": "Informatique", "items": ["Réseautage", "Systèmes UNIX (Linux)", "Docker", "Node.js", "PyTorch", "LangChain", "OpenStack", "Proxmox", "Android", "SQL", "noSQL", "Développement agile (Scrum)", "Git"]},
+    {"category": "Méthodes de recherche", "items": ["Conception centrée sur l'humain", "Entretiens semi-structurés", "Analyse de protocole", "Co-design", "Personas", "Analyse thématique réflexive", "Test Mann-Whitney", "TOST"]},
+    {"category": "Langues", "items": ["Français (professionnel)", "Anglais (langue maternelle)"]}
+  ],
+  "projects": [
+    {"project_name": "LLMs pour la conception haptique aux jeux vidéos", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": ["Llama 3.2", "Audiogen"], "description": "IA générative pour créer des effets haptiques vibrotactiles. Atelier avec des étudiants en jeux vidéos.", "url": null},
+    {"project_name": "Apprentissage par renforcement appliqué à la création audio-haptique", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": [], "description": "Interaction humain-IA en conception haptique. Agents pour encourager l'exploration d'idées.", "url": null},
+    {"project_name": "Haptic Authoring Toolbox", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": [], "description": "Collection libre d'outils de conception pour les effets haptiques. Tests d'utilisabilité et entretiens.", "url": null},
+    {"project_name": "IMAGE - Internet Multimodal Access to Graphical Exploration", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": ["Docker", "Node.js", "Python", "Typescript"], "description": "Produire automatiquement des interprétations riches de contenu web visuel pour les personnes aveugles. Serveur et client, interprétations par l'ouïe et le toucher.", "url": null},
+    {"project_name": "Becoming, Expérience en réalité virtuelle", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": ["Unreal Engine", "C++", "C#"], "description": "Expérience VR basée sur un poème par Rumi. Effets haptiques en C++ et C#. Collaboration avec Sonic Arts R&D Group, UC San Diego.", "url": null},
+    {"project_name": "Alarmes haptiques pour les USI", "role": null, "from_date": null, "to_date": null, "duration": null, "technologies": ["Android"], "description": "Alarmes haptiques (vibration) pour environnements bruyants (USI, salles opératoires). Application Android pour simuler et collecter données.", "url": null}
+  ],
+  "interests": [],
+  "accomplishments": ["Prix de meilleure affiche (Best Poster) à EuroHaptics", "Bourse de recherche doctorale FRQNT", "Bourse d'études supérieures du Canada (CRSNG)", "Bourse Vadasz, McGill Engineering Doctoral Award"],
+  "contacts": ["juliette@julietteregimbal.ca", "www.julietteregimbal.ca"]
+}

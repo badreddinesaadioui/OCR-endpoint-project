@@ -25,7 +25,7 @@ Recommandations stratégiques pour les clients.
 CONTACT
 06 66 66 66 66
 Paris, France
-[prenom.nom@mail.com](mailto:prenom.nom@mail.com)
+prenom.nom@mail.com
 /Thomas CHLAHBY/
 COMPÉTENCES
 Communication digitale
@@ -50,3 +50,5 @@ CENTRES D'INTÉRÊT
 Equitation
 Bénévolat
 Musique
+
+©AZURIUS – Modeles-de-cv,com

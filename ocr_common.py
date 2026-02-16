@@ -20,7 +20,10 @@ except Exception:
 # Paths
 # ---------------------------------------------------------------------------
 _ROOT = os.path.dirname(os.path.abspath(__file__))
-DB_DIR = os.path.join(_ROOT, "database")
+DB_DIR = os.path.join(_ROOT, "ground_truth_database")
+CV_DIR = os.path.join(DB_DIR, "cv")  # CV documents (pdf, docx, etc.)
+PARSING_TXT_DIR = os.path.join(DB_DIR, "parsed")  # transcription .txt files
+PARSING_DIR = os.path.join(DB_DIR, "json_parsed")  # ground truth JSON
 SCREENSHOTS_DIR = os.path.join(DB_DIR, "screenshots")
 METADATA_PATH = os.path.join(DB_DIR, "metadata.csv")
 
@@ -51,8 +54,8 @@ def get_cv_pdf_and_ground_truth(metadata_row: dict) -> tuple[Optional[bytes], Op
     base, ext = os.path.splitext(filename)
     base = base.strip()
     ext = (ext or "").lower().lstrip(".")
-    doc_path = os.path.join(DB_DIR, filename)
-    txt_path = os.path.join(DB_DIR, f"{base}.txt")
+    doc_path = os.path.join(CV_DIR, filename)
+    txt_path = os.path.join(PARSING_TXT_DIR, f"{base}.txt")
     shot_path = _screenshot_path(base)
 
     ground_truth = ""

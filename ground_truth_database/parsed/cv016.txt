@@ -1,8 +1,10 @@
 JEAN-PIERRE MARTIN
 
 Digital Project Manager
-12 Rue de la Paix, 75002 Paris | +33 6 12 34 56 78 | [jp.martin@email.fr](mailto:jp.martin@email.fr)
-LinkedIn: [linkedin.com/in/jpmartin](http://linkedin.com/in/jpmartin) | Born March 15, 1990 (35 years old)
+
+12 Rue de la Paix, 75002 Paris | +33 6 12 34 56 78 | jp.martin@email.fr
+
+LinkedIn: linkedin.com/in/jpmartin | Born March 15, 1990 (35 years old)
 
 PROFILE
 
@@ -13,6 +15,7 @@ ability to unite teams around common goals.
 PROFESSIONAL EXPERIENCE
 
 January 2021 — Present
+
 Senior Digital Project Manager | Groupe Lumina — Paris
 
 Led digital transformation projects (budget €500K+). Coordinated teams of 15 (developers, designers, data
@@ -34,32 +37,31 @@ Tracked project timelines and coordinated with external contractors.
 
 EDUCATION
 
-!
+2013 – 2015
+Master in Digital Management and Innovation | HEC Paris
+With Highest Honors | Thesis: "Digital transformation of French SMEs"
 
-Degree Inst
+2010 – 2013
+Bachelor's in Economics and Management | Université Paris-Dauphine
+Specialization in information systems and management
 
-2013 — 2015 Master's in Digital Management & HEC Paris
-Innovation Thesis: "Digital Transformation of French SMEs"
-With Highest Honours
-2010 — 2013 Bachelor's in Economics & Université Paris-Dauphine
-Management Specialization in Information Systems &
-Management
-2010 Baccalauréat ES (Economics & Lycée Louis-le-Grand — Paris
-
-Social Sciences)
-With Honours
+2010
+Economics and Social Sciences Baccalaureate | Lycée Louis-le-Grand — Paris
+With Honors
 
 SKILLS
 
-Project Management Agile, Scrum, Kanban, MS Project, Jira, Trello, Notion
+Project Management    Agile, Scrum, Kanban, MS Project, Jira, Trello, Notion
 
-Digital Tools Google Analytics, SEMrush, Figma, Adobe XD, Miro
+Digital Tools         Google Analytics, SEMrush, Figma, Adobe XD, Miro
 
-Development HTML/CSS, JavaScript (basics), SQL, WordPress, Shopify
+Development           HTML/CSS, JavaScript (basics), SQL, WordPress, Shopify
 
-Languages French (native), English (C1 — fluent), Spanish (B2)
-Soft Skills Leadership, Communication, Problem-solving, Creativity
+Languages             French (native), English (C1 – fluent), Spanish (B2)
+
+Soft Skills           Leadership, Communication, Problem solving, Creativity
+
 INTERESTS
 
-Running (Paris Half-Marathon 2024) + Urban photography * Tech & Al news + Volunteering: computer classes
-for seniors
+Running (Paris Semi-marathon 2024) • Urban photography • Tech and AI watch •
+Volunteering: IT courses for seniors

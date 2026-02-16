@@ -1,10 +1,10 @@
 Voici la transcription brute du CV :
 سلمى صالح
 مندوبة مبيعات
-[www.reallygreatsite.com](http://www.reallygreatsite.com/)
+www.reallygreatsite.com
 123 Anywhere St., Any City, ST 12345
 +123-456-7890
-[hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+hello@reallygreatsite.com
 نبذة عني
 لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينغ أليايت,سيت دو أيوسمود تيمبور أنكايديديونتيوت لابوري ات دولار ماجنا أليكوا. يوت انيم أد مينيم فينايم,كيواس نوستراد أكسير سيتاشن يللأمكو لابورأس نيسي يت أليكيوب أكس أيا كوممودو كونسيكيوات . دولايس أيوتي أريري دولار إن ريبريهينديرايت فوليوبتاتي فيلايت أيسسي كايلليوم دولار أيو فيجايت نيولا باراياتور
 الخبرات المهنية
@@ -49,8 +49,8 @@ Voici la transcription brute du CV :
 د. أحمد السيد
 شركة مبيعات
 123-456-7890
-[hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+hello@reallygreatsite.com
 م. أميرة جديد
 شركة مبيعات
 123-456-7890
-[hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+hello@reallygreatsite.com

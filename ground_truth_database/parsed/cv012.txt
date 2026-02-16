@@ -1,9 +1,9 @@
-Voici la transcription brute du CV :
 ليلى احمد
 مديرة تسويق
 التواصل
 +123-456-7890
-[hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)[www.reallygreatsite.com](http://www.reallygreatsite.com/)
+hello@reallygreatsite.com
+www.reallygreatsite.com
 123 Anywhere St., Any City
 التعليم
 (2011 -2015)

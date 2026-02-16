@@ -1,0 +1,82 @@
+{
+  "linkedin_url": "linkedin.com/in/jpmartin",
+  "name": "Jean-Pierre Martin",
+  "location": "12 Rue de la Paix, 75002 Paris",
+  "about": "Digital project manager with 10 years of experience in web and mobile project management. Passionate about technological innovation and corporate digital transformation. Recognized for leadership, analytical skills, and ability to unite teams around common goals.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Senior Digital Project Manager",
+      "institution_name": "Groupe Lumina",
+      "linkedin_url": null,
+      "from_date": "January 2021",
+      "to_date": "Present",
+      "duration": null,
+      "location": "Paris",
+      "description": "Led digital transformation projects (budget €500K+). Coordinated teams of 15 (developers, designers, data analysts). Implemented Agile/Scrum methodologies. Increased e-commerce conversion rate by 35%."
+    },
+    {
+      "position_title": "Web Project Manager",
+      "institution_name": "Agence Créative DigiWave",
+      "linkedin_url": null,
+      "from_date": "March 2018",
+      "to_date": "December 2020",
+      "duration": null,
+      "location": "Lyon",
+      "description": "Managed 20+ web projects for major clients (L'Oréal, Danone, BNP Paribas). Supervised UX/UI redesign of high-traffic websites. Introduced A/B testing, improving user engagement by 28%."
+    },
+    {
+      "position_title": "Assistant Project Manager",
+      "institution_name": "StartUp Connect",
+      "linkedin_url": null,
+      "from_date": "September 2015",
+      "to_date": "February 2018",
+      "duration": null,
+      "location": "Bordeaux",
+      "description": "Assisted in managing mobile projects (iOS/Android). Drafted specifications and functional requirements. Tracked project timelines and coordinated with external contractors."
+    }
+  ],
+  "educations": [
+    {
+      "degree": "Master in Digital Management and Innovation",
+      "institution_name": "HEC Paris",
+      "linkedin_url": null,
+      "from_date": "2013",
+      "to_date": "2015",
+      "duration": null,
+      "location": null,
+      "description": "With Highest Honors. Thesis: Digital transformation of French SMEs"
+    },
+    {
+      "degree": "Bachelor's in Economics and Management",
+      "institution_name": "Université Paris-Dauphine",
+      "linkedin_url": null,
+      "from_date": "2010",
+      "to_date": "2013",
+      "duration": null,
+      "location": null,
+      "description": "Specialization in information systems and management"
+    },
+    {
+      "degree": "Economics and Social Sciences Baccalaureate",
+      "institution_name": "Lycée Louis-le-Grand",
+      "linkedin_url": null,
+      "from_date": "2010",
+      "to_date": null,
+      "duration": null,
+      "location": "Paris",
+      "description": "With Honors"
+    }
+  ],
+  "skills": [
+    {"category": "Project Management", "items": ["Agile", "Scrum", "Kanban", "MS Project", "Jira", "Trello", "Notion"]},
+    {"category": "Digital Tools", "items": ["Google Analytics", "SEMrush", "Figma", "Adobe XD", "Miro"]},
+    {"category": "Development", "items": ["HTML/CSS", "JavaScript (basics)", "SQL", "WordPress", "Shopify"]},
+    {"category": "Languages", "items": ["French (native)", "English (C1 – fluent)", "Spanish (B2)"]},
+    {"category": "Soft Skills", "items": ["Leadership", "Communication", "Problem solving", "Creativity"]}
+  ],
+  "projects": [],
+  "interests": ["Running (Paris Semi-marathon 2024)", "Urban photography", "Tech and AI watch", "Volunteering: IT courses for seniors"],
+  "accomplishments": [],
+  "contacts": ["+33 6 12 34 56 78", "jp.martin@email.fr"]
+}

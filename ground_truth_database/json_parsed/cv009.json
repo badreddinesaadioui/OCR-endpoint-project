@@ -1,0 +1,40 @@
+{
+  "linkedin_url": null,
+  "name": "Vitalik Buterin",
+  "location": "SF, CA",
+  "about": "An experienced superhero. Skilled in preventing market crashes, putting villains in prison & yes, saving humanity. In my free time, I lead the Ethereum Organization. Oh, and I also like cats & canine.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Co Founder",
+      "institution_name": "Ethereum Organization",
+      "linkedin_url": null,
+      "from_date": "Nov'13",
+      "to_date": "Present",
+      "duration": null,
+      "location": "SF, CA",
+      "description": "Ethereum is a blockchain-based distributed computing platform & OS with a $85 bn. market cap. Published the original Ethereum whitepaper to lay down the base of the blockchain. Led Ethereum to a $85 bn. market capitalization within 4 years of inception."
+    },
+    {
+      "position_title": "Co Founder",
+      "institution_name": "Bitcoin Magazine",
+      "linkedin_url": null,
+      "from_date": "May '12",
+      "to_date": "Dec'14",
+      "duration": null,
+      "location": "SF, CA",
+      "description": "Bitcoin Magazine is the oldest online Bitcoin publication with 2.3+ million visitors per month."
+    }
+  ],
+  "educations": [
+    {"degree": "Thiel Fellowship", "institution_name": "The Peter Thiel Foundation", "linkedin_url": null, "from_date": "Jun '14", "to_date": "May '16", "duration": null, "location": "SF, CA", "description": null},
+    {"degree": "BASc - Computer Science", "institution_name": "University of Waterloo (Dropout)", "linkedin_url": null, "from_date": "Jul'12", "to_date": "Nov'13", "duration": null, "location": "Waterloo, ON", "description": null}
+  ],
+  "skills": [
+    {"category": "Key Skills", "items": ["Blockchain"]}
+  ],
+  "projects": [],
+  "interests": [],
+  "accomplishments": ["Forbes 30 under 30 list, '18", "Nobel Awesomeness Prize '18", "Fortune 40 under 40 list, '16", "Most matched person: 2,000+ right swipes on Tinder"],
+  "contacts": ["+1 (654) 888.1111", "vitalik@hiration.com"]
+}

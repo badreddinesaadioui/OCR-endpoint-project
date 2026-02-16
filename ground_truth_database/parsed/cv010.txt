@@ -4,9 +4,9 @@
 بيانات الاتصال
 
 الهاتف: 01001234567
-الإيميل: [hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+الإيميل: hello@reallygreatsite.com
 العنوان: 360 شارع مكة، المهندسين، الجيزة، 12345
-لينكد إن: [www.reallygreatsite.com](http://www.reallygreatsite.com/)
+لينكد إن: www.reallygreatsite.com
 
 الملخص المهني
 

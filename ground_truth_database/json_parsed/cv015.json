@@ -1,0 +1,62 @@
+{
+  "linkedin_url": null,
+  "name": "Camilla Martine",
+  "location": "Any City",
+  "about": "Experte comptable avec expérience en responsabilité comptable, audit, contrôle de gestion et comptabilité fiscale.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Responsable Comptabilité",
+      "institution_name": "Messagem",
+      "linkedin_url": null,
+      "from_date": "2018",
+      "to_date": "2024",
+      "duration": null,
+      "location": "Any City",
+      "description": "Supervision de la gestion des bilans, optimisation des processus pour réduire les coûts de 15 %, tout en garantissant la conformité fiscale."
+    },
+    {
+      "position_title": "Experte-Comptable",
+      "institution_name": "Classique Immo",
+      "linkedin_url": null,
+      "from_date": "2012",
+      "to_date": "2018",
+      "duration": null,
+      "location": "Any City",
+      "description": "Audit des comptes, optimisation de la fiscalité d'entreprises de 10 %, encadrement d'une équipe de 5 collaborateurs juniors."
+    },
+    {
+      "position_title": "Contrôleuse de Gestion",
+      "institution_name": "Bancollect",
+      "linkedin_url": null,
+      "from_date": "2010",
+      "to_date": "2012",
+      "duration": null,
+      "location": "Any City",
+      "description": "Réduction des écarts budgétaires de 20 %, amélioration de la rentabilité des services, rapports financiers mensuels."
+    },
+    {
+      "position_title": "Comptable Fiscaliste",
+      "institution_name": "Narbonne et fils",
+      "linkedin_url": null,
+      "from_date": "2009",
+      "to_date": "2010",
+      "duration": null,
+      "location": "Any City",
+      "description": "Gestion des déclarations fiscales, optimisation de la charge fiscale des entreprises, stratégies pour minimiser les risques."
+    }
+  ],
+  "educations": [
+    {"degree": "Master Comptabilité & Audit", "institution_name": "Matinfo", "linkedin_url": null, "from_date": "2007", "to_date": "2009", "duration": null, "location": null, "description": null},
+    {"degree": "Diplôme d'Expertise Comptable", "institution_name": "Concordia", "linkedin_url": null, "from_date": "2006", "to_date": "2007", "duration": null, "location": null, "description": null},
+    {"degree": "Certification en Fiscalité", "institution_name": "Tempo", "linkedin_url": null, "from_date": "2004", "to_date": "2006", "duration": null, "location": null, "description": null}
+  ],
+  "skills": [
+    {"category": "Logiciels", "items": ["Logiciel 01", "Logiciel 02", "Logiciel 03", "Logiciel 04", "Logiciel 05", "Logiciel 06"]},
+    {"category": "Expertise", "items": ["Analyse financière approfondie", "Maîtrise des normes comptables", "Gestion et optimisation budgétaire", "Compétences en planification budgétaire", "Conseil fiscal stratégique"]}
+  ],
+  "projects": [],
+  "interests": [],
+  "accomplishments": [],
+  "contacts": ["+123-456-7890", "hello@reallygreatsite.com"]
+}

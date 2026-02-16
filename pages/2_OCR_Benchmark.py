@@ -59,7 +59,9 @@ def get_replicate_key():
 # ---------------------------------------------------------------------------
 # Database (same as our_database.py: CVtheque library)
 # ---------------------------------------------------------------------------
-DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database")
+DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ground_truth_database")
+CV_DIR = os.path.join(DB_DIR, "cv")
+PARSING_TXT_DIR = os.path.join(DB_DIR, "parsed")
 SCREENSHOTS_DIR = os.path.join(DB_DIR, "screenshots")
 METADATA_PATH = os.path.join(DB_DIR, "metadata.csv")
 
@@ -717,7 +719,7 @@ else:
     # Use from library (same CVtheque as our_database.py)
     db_metadata = load_db_metadata()
     if not db_metadata:
-        st.warning("No CV library found (database/metadata.csv). Use **Upload PDF** or add the database.")
+        st.warning("No CV library found (ground_truth_database/metadata.csv). Use **Upload PDF** or add the database.")
     else:
         options = [f"{r['filename']} ({r.get('language', '')}, {r.get('layout_type', '')})" for r in db_metadata]
         choice = st.selectbox("Select a CV from the library", options=options, key="library_cv")
@@ -728,8 +730,8 @@ else:
             base, ext = os.path.splitext(filename)
             base = base.strip()
             ext = ext.lower().lstrip(".")
-            doc_path = os.path.join(DB_DIR, filename)
-            txt_path = os.path.join(DB_DIR, f"{base}.txt")
+            doc_path = os.path.join(CV_DIR, filename)
+            txt_path = os.path.join(PARSING_TXT_DIR, f"{base}.txt")
             shot_path = _screenshot_path(base)
 
             # Show display + transcription (same as our_database modal)
@@ -761,7 +763,7 @@ else:
                     # Key per CV so changing selection updates the text area
                     st.text_area("Ground truth", ground_truth, height=200, disabled=False, key=f"gt_library_{base}")
                 else:
-                    st.info(f"No {base}.txt in database.")
+                    st.info(f"No {base}.txt in ground_truth_database/parsed.")
                     ground_truth = ""
 
             # OCR benchmark: PDF directly; DOCX → PDF (LibreOffice); PNG/JPG → single-page PDF (PyMuPDF)
@@ -792,7 +794,7 @@ else:
                             st.caption("Screenshot fallback also failed. Install **LibreOffice** (e.g. Mac: `brew install --cask libreoffice`) for DOCX support.")
                     else:
                         st.error("DOCX → PDF conversion failed: " + (conv_err or "Unknown error"))
-                        st.caption("To use DOCX: install **LibreOffice** (e.g. Mac: `brew install --cask libreoffice`, or download from libreoffice.org). Or add a screenshot for this CV in `database/screenshots/{base}.png` for a fallback.")
+                        st.caption("To use DOCX: install **LibreOffice** (e.g. Mac: `brew install --cask libreoffice`, or download from libreoffice.org). Or add a screenshot for this CV in `ground_truth_database/screenshots/{base}.png` for a fallback.")
                 except Exception as e:
                     pdf_bytes = None
                     st.error(f"Could not read or convert {filename}: {e}")

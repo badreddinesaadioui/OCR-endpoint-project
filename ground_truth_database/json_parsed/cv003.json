@@ -1,0 +1,69 @@
+{
+  "linkedin_url": null,
+  "name": "Emilie Michaud",
+  "location": "Paris (75) France",
+  "about": "Étudiante en 3ème année de Licence, passionnée de langues étrangères et dôtée d'un bon sens relationnel. Je recherche un emploi étudiant en tant qu'hôtesse d'accueil dans un hôtel.",
+  "open_to_work": true,
+  "experiences": [
+    {
+      "position_title": "Traductrice stagiaire",
+      "institution_name": "Traduc'entreprise",
+      "linkedin_url": null,
+      "from_date": "Juillet 2022",
+      "to_date": null,
+      "duration": null,
+      "location": "Paris (75)",
+      "description": "Révision de traduction. Traduction de notices d'utilisation. Traduction de documents pour des particuliers."
+    },
+    {
+      "position_title": "Assistante de direction stagiaire",
+      "institution_name": "EDF",
+      "linkedin_url": null,
+      "from_date": "Février 2014",
+      "to_date": null,
+      "duration": "1 semaine",
+      "location": "Paris (75)",
+      "description": "Stage d'observation 3ème (1 semaine). Participation aux réunions. Rédactions de comptes-rendus courts."
+    },
+    {
+      "position_title": "Bénévole",
+      "institution_name": "Le Secours Populaire",
+      "linkedin_url": null,
+      "from_date": "Mars 2021",
+      "to_date": null,
+      "duration": null,
+      "location": "Paris (75)",
+      "description": "Collecte de nourriture. Accueil des personnes en difficulté. Animation d'atelier de sensibilisation."
+    }
+  ],
+  "educations": [
+    {
+      "degree": "Licence LEA Anglais / Italien",
+      "institution_name": "Université",
+      "linkedin_url": null,
+      "from_date": "2019",
+      "to_date": "2022",
+      "duration": null,
+      "location": "Paris (75)",
+      "description": "Civilisation Droit Économie Traduction"
+    },
+    {
+      "degree": "Baccalauréat Littéraire",
+      "institution_name": "Lycée Aristide Briand",
+      "linkedin_url": null,
+      "from_date": "2019",
+      "to_date": null,
+      "duration": null,
+      "location": "Paris (75)",
+      "description": "Mention Bien, Option art du spectacle, Classe européenne, UNSS badminton"
+    }
+  ],
+  "skills": [
+    {"category": "Compétences", "items": ["Sens du relationnel", "Travail en équipe", "Créativité", "Ouverture d'esprit", "Ponctualité", "Photoshop", "Montage vidéo"]},
+    {"category": "Langues", "items": ["Francais", "Anglais", "Italien"]}
+  ],
+  "projects": [],
+  "interests": ["Formaciones : Diplomados, Congresos, xxxxxxxxxx xxxxxx xxxxxxxxx xxxxxxxxxxxxxxxxx", "Hobbies: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+  "accomplishments": [],
+  "contacts": ["06 06 06 06 06", "michaud.emilie@gnail.com"]
+}

@@ -132,7 +132,7 @@ def _run_one_cv(cv_filename: str, pdf_bytes: bytes, api_filename: str, ground_tr
 st.set_page_config(page_title="Parallel OCR Test", layout="wide")
 st.title("Parallel OCR Test: Mistral vs Replicate text-extract-ocr")
 st.markdown("Run **Mistral OCR 3** and **Replicate text-extract-ocr** on all CVs in the database. "
-            "Results are saved in **SQLite** (`database/ocr_test_results.db`) and persist after you close the app.")
+            "Results are saved in **SQLite** (`ground_truth_database/ocr_test_results.db`) and persist after you close the app.")
 
 mistral_key = ocr.get_mistral_key()
 replicate_key = ocr.get_replicate_key()
@@ -157,8 +157,8 @@ if mistral_key and replicate_key:
             })
 
     if not cv_tasks:
-        st.warning("No CVs found with both a valid document (PDF/DOCX/PNG/JPG) and ground truth (e.g. `database/cv001.txt`). "
-                   "Add files and transcriptions to the database.")
+        st.warning("No CVs found with both a valid document (PDF/DOCX/PNG/JPG) and ground truth (e.g. `ground_truth_database/parsed/cv001.txt`). "
+                   "Add files and transcriptions to the ground truth database.")
 
     run_all = st.button("Run OCR on all CVs", type="primary", key="run_all_ocr")
     if run_all and cv_tasks:

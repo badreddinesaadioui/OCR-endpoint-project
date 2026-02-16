@@ -1,0 +1,61 @@
+{
+  "linkedin_url": null,
+  "name": "Jessica Claire",
+  "location": null,
+  "about": "Meticulous Accountant with advanced accounting, mathematical and QuickBooks expertise. Successful at maintaining financial records and reviewing account activity. Proven track record of developing accurate spreadsheets and delivering organized reports. Accomplish tasks within strict deadlines while prioritizing urgent needs. Well-organized, diligent and focused professional. Acknowledged for reliability, integrity and quick-learning ability. Highly skilled for identifying and correcting errors. Enthusiastically seeking a role in which strong work ethic and resourceful nature will be highly valued.",
+  "open_to_work": true,
+  "experiences": [
+    {
+      "position_title": "Accountant",
+      "institution_name": "Anne Carlsen",
+      "linkedin_url": null,
+      "from_date": "05/2020",
+      "to_date": "Current",
+      "duration": null,
+      "location": "Jamestown, ND",
+      "description": "Created budgets and forecasts for management group to meet regular accounting deadlines. Reviewed accounting structures and procedures on regular basis to identify areas in need of improvement. Delivered human resources financial support by certifying and processing payroll, completing deposits, performing pay adjustments and promptly distributing checks. Submitted biweekly reports on payroll activities. Performed calculations in overtime, vacation and sick hours to provide accurate data to payroll processing database. Processed payroll garnishments such as tax liens and child support. Maintained consistent knowledge of multi-state and local tax regulations. Verified accounts payable documentation and generated weekly check runs to pay tax and liabilities before predetermined deadlines. Oversaw hiring, staffing, and labor law compliance. Reviewed accounts on monthly basis to assess aging and pursue collection of funds. Prepared billing statements and invoices for customer purchases and recorded transaction date, price and fees to support accuracy. Processed tax exempt certificates, coupons and vendor credit inquiries. Reconciled company accounts for credit cards, employee expenses and commissions. Prepared daily cash flow analysis. Completed scheduled inventory counts and supply audits to track shrinkage and inform purchasing decisions. Prepared and maintained records and reports of inventories, price lists, shortages, shipments and expenditures. Reviewed established business practices and improved processes to increase efficiencies and reduce expense without compromising customer service levels."
+    },
+    {
+      "position_title": "Accounting Assistant",
+      "institution_name": "Five Star Quality Care, Inc.",
+      "linkedin_url": null,
+      "from_date": "05/2019",
+      "to_date": "Current",
+      "duration": null,
+      "location": "Boston, MA",
+      "description": "Applied mathematical abilities on a daily basis to calculate and check figures in all areas of accounting systems. Reconciled all company accounts each month. Posting bi-weekly payroll for company employees, including calculating taxes. Disbursing checks to vendors. Entered figures using a 10-key calculator to compute data quickly. Entering daily deposits for multiple partners in QuickBooks. Reporting unclaimed property. Reporting and disbursing 1099's to applicable vendors. Scanning all check deposits through software to deposit in the bank. Keeping confidentiality with bank accessibility and information."
+    },
+    {
+      "position_title": "Registration Assistant",
+      "institution_name": "Dartmouth College",
+      "linkedin_url": null,
+      "from_date": "01/2017",
+      "to_date": "11/2019",
+      "duration": null,
+      "location": "Hanover, NH",
+      "description": "Answering multi-line phones. Registering 100+ patients in Pre-Registration Department, Emergency Room Department, Main Admitting, and Day Surgery Department. Scheduling patients for outpatient services. Transcribing orders for outpatient services. Insurance verifications of eligibility, benefit information, and pre-certification. Collecting all co-pays, surgery deposits, and outpatient services. Organizing Pods, stocking appropriate forms for Pods and front desk. Transporting patients to various departments."
+    },
+    {
+      "position_title": "Accounting Intern",
+      "institution_name": "Avid Technology Professionals",
+      "linkedin_url": null,
+      "from_date": "10/2018",
+      "to_date": "05/2019",
+      "duration": null,
+      "location": "Dulles, VA",
+      "description": "Maintained account accuracy by reviewing and reconciling checks monthly. Utilized JD Edwards Software to analyze, store and record company financial information. Reconciled multiple cash deposits from various departments. Reconciled 30-35 bank accounts. Reconciled 40-50 Fidelity accounts. Entered flex payments, worker's compensation, health claim payments, credit card fees, monthly interest into general ledgers. Scanning in supporting documentations for entries posted. Pulling any files needed as well as filing away any documentation requested by City Auditor."
+    }
+  ],
+  "educations": [
+    {"degree": "Master in Professional Accounting", "institution_name": "Colorado State University- Global Campus", "linkedin_url": null, "from_date": "06/2021", "to_date": null, "duration": null, "location": "Aurora, CO", "description": "GPA: 3.78"},
+    {"degree": "Bachelor of Business Administration: Accounting", "institution_name": "West Texas A&M University", "linkedin_url": null, "from_date": "05/2019", "to_date": null, "duration": null, "location": "Canyon, TX", "description": "GPA: 3.2, Dean's List Spring 2018, Finance Association, National Honor Society"},
+    {"degree": "Associate of Science: Business Administration in Accounting", "institution_name": "Amarillo College", "linkedin_url": null, "from_date": "05/2017", "to_date": null, "duration": null, "location": "Amarillo, TX", "description": "GPA: 3.1"}
+  ],
+  "skills": [
+    {"category": "Skills", "items": ["Intuit QuickBooks", "Payroll Processing", "Project Management", "Budgeting", "Financial Statement Review", "Human resources knowledge"]}
+  ],
+  "projects": [],
+  "interests": [],
+  "accomplishments": [],
+  "contacts": ["(555) 432-1000", "resumesample@example.com"]
+}

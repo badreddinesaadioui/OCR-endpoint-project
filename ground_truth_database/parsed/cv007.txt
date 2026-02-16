@@ -11,7 +11,7 @@ LANGUAGES
 
 Jessica Claire
 
-@ 100 Montgomery St 10th Floor *2 (555) 432-1000 4 [resumesample@example.com](mailto:resumesample@example.com)
+100 Montgomery St 10th Floor | (555) 432-1000 | resumesample@example.com
 
 Skilled employee with a positive attitude
 

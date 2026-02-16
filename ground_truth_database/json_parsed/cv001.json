@@ -1,0 +1,141 @@
+{
+  "linkedin_url": null,
+  "name": "Ghita Nahli",
+  "location": "Paris, France",
+  "about": "Ingénieure généraliste de l'école Centrale et titulaire d'un double diplôme Master COSI (Conseil en Organisation, Stratégie et Systèmes d'Information), je me spécialise en management de projet, transformation digitale, conseil IT et data management. Je recherche un stage de fin d'études de 6 mois à partir de Mars 2026.",
+  "open_to_work": true,
+  "experiences": [
+    {
+      "position_title": "Product Owner Data",
+      "institution_name": "Groupe BPCE",
+      "linkedin_url": null,
+      "from_date": "Avril 2025",
+      "to_date": "Sept 2025",
+      "duration": "5 mois",
+      "location": "Paris, France",
+      "description": "Optimisation de l'outil Planon : Analyse des incidents, recueil des besoins métiers et formalisation des demandes d'évolution auprès des entités du Groupe (Banques Populaires et Caisses d'Epargne). Contrôle de la qualité de données et coordination projet : Contrôle de la qualité des données dans l'outil Planon et contribution à la priorisation des besoins fonctionnels en collaboration avec les parties prenantes internes."
+    },
+    {
+      "position_title": "Consultante",
+      "institution_name": "Fnac Darty",
+      "linkedin_url": null,
+      "from_date": "Janvier 2025",
+      "to_date": "Mars 2025",
+      "duration": "3 mois",
+      "location": "Paris, France",
+      "description": "Analyse stratégique d'une offre de service : Réalisation d'une étude, dans le cadre du Master COSI, sur la catégorie Téléphonie Mobile du groupe Fnac Darty et élaboration d'une trajectoire stratégique visant à optimiser l'offre d'assurance associée."
+    },
+    {
+      "position_title": "Consultante en stratégie",
+      "institution_name": "DIFMEDI",
+      "linkedin_url": null,
+      "from_date": "Avril 2024",
+      "to_date": "Juillet 2024",
+      "duration": "4 mois",
+      "location": "Casablanca, Maroc",
+      "description": "Étude de marché : Réalisation d'une analyse détaillée du secteur des dispositifs médicaux et du diagnostic in-vitro au Maroc. Veille et recommandations stratégiques : Proposition de trois axes de croissance pour améliorer la compétitivité de l'entreprise et préparation de benchmarks concurrentiels et des présentations pour orienter les décisions stratégiques."
+    },
+    {
+      "position_title": "Consultante",
+      "institution_name": "TNP Consultants",
+      "linkedin_url": null,
+      "from_date": "Juillet 2023",
+      "to_date": "Août 2023",
+      "duration": "2 mois",
+      "location": "Casablanca, Maroc",
+      "description": "Réalisation de propositions commerciales et recommandations : Contribution à la réponse à 2 appels d'offres et élaboration d'une solution adaptée aux besoins spécifiques d'un client banque. Extraction et prétraitement des données : Gestion des données pour garantir des informations de qualité pour l'analyse."
+    },
+    {
+      "position_title": "Analyste de données",
+      "institution_name": "Junior Enterprise Centrale Casablanca JECC",
+      "linkedin_url": null,
+      "from_date": "Février 2023",
+      "to_date": "Juillet 2023",
+      "duration": "6 mois",
+      "location": "Casablanca, Maroc",
+      "description": "Stratégie de marché : Réalisation d'une analyse stratégique pour le client TRIA basée sur plus de 600 enquêtes de marché ciblées, développement de dashboards sur Power BI, et élaboration d'un plan d'affaires sur six mois."
+    }
+  ],
+  "educations": [
+    {
+      "degree": "Master COSI - Conseil en Organisation, Stratégie et Systèmes d'Information",
+      "institution_name": "ENSTA Paris - Institut Polytechnique de Paris",
+      "linkedin_url": null,
+      "from_date": "2024",
+      "to_date": "en cours",
+      "duration": null,
+      "location": "Paris, France",
+      "description": "Transformation Digitale, SI, Gestion de Risques, Management de Projet et Conduite du Changement et AMOA"
+    },
+    {
+      "degree": "Diplôme d'ingénieur généraliste, accrédité EUR-ACE et reconnu par l'État français",
+      "institution_name": "Ecole Centrale Casablanca – Groupe CentraleSupélec",
+      "linkedin_url": null,
+      "from_date": "2022",
+      "to_date": "en cours",
+      "duration": null,
+      "location": "Casablanca, Maroc",
+      "description": "Programmation (Python, MATLAB), IA, Big Data et IoT, Gestion de projets technologiques, Innovation, Entrepreneuriat et Analyse de systèmes complexes."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Compétences transversales",
+      "items": ["Capacité à travailler en projet pluridisciplinaire", "Proactive", "Rigoureuse", "Esprit analytique"]
+    },
+    {
+      "category": "Outils / Langages de programmation",
+      "items": ["Excel", "Power BI", "Python (Numpy, Pandas, TensorFlow, Pytorch)", "VBA", "R"]
+    },
+    {
+      "category": "Certifications",
+      "items": ["Google Data Analytics", "Google Project Management", "LearnQuest Scrum Master"]
+    },
+    {
+      "category": "Langues",
+      "items": ["Anglais (TOEIC C1 - 970/990)", "Français (bilingue)", "Arabe (natif)"]
+    }
+  ],
+  "projects": [
+    {
+      "project_name": "PredictA Industry",
+      "role": "Co-fondatrice",
+      "from_date": null,
+      "to_date": null,
+      "duration": null,
+      "technologies": ["Python", "Streamlit"],
+      "description": "Projet de startup spécialisée en maintenance prédictive en temps réel. Étude de marché, prospection et négociation avec des entreprises pour favoriser l'adoption de la solution.",
+      "url": null
+    },
+    {
+      "project_name": "Cybersécurité avec Gen IA",
+      "role": null,
+      "from_date": null,
+      "to_date": null,
+      "duration": null,
+      "technologies": ["Python", "CNN", "InceptionV3", "GANs"],
+      "description": "Développement d'un modèle GAN pour la génération de signaux synthétiques.",
+      "url": null
+    },
+    {
+      "project_name": "Simulation de jeu d'entreprise Kalypso",
+      "role": null,
+      "from_date": null,
+      "to_date": null,
+      "duration": null,
+      "technologies": ["Business Intelligence", "Analytics", "Gestion stratégique"],
+      "description": "Plans de production, détection de tendances de marché et prévisions financières.",
+      "url": null
+    }
+  ],
+  "interests": ["Équitation", "Tennis de table", "Football"],
+  "accomplishments": [
+    "Présidente du Bureau des Etudiants de l'Ecole Centrale Casablanca (BDE)",
+    "Responsable des partenariats de la Junior Entreprise Centrale JECC",
+    "Responsable de la prospection du Forum ECC-Entreprises",
+    "Google Data Analytics Certification",
+    "Google Project Management Certification",
+    "LearnQuest Scrum Master"
+  ],
+  "contacts": ["+33 (0) 6 29 32 00 66", "ghitanahli0@gmail.com"]
+}

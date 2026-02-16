@@ -1,0 +1,79 @@
+{
+  "linkedin_url": null,
+  "name": "Thomas CHLAHBY",
+  "location": "Paris, France",
+  "about": "Professionnel de la communication spécialisée dans la gestion de projets événementiels et le développement de contenus attractifs sur les réseaux sociaux. Fort d'expériences dans des entreprises de renom.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Chargé de Communication",
+      "institution_name": "Hermès International",
+      "linkedin_url": null,
+      "from_date": "Sept. 20XX",
+      "to_date": "Feb. 20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": "Coordination des campagnes de communication. Création de visuels et textes pour les réseaux sociaux. Participation à la mise en place d'un événement presse pour le lancement de nouveaux produits."
+    },
+    {
+      "position_title": "Assistant de Communication Digitale",
+      "institution_name": "Groupe Chanel",
+      "linkedin_url": null,
+      "from_date": "Sept. 20XX",
+      "to_date": "Feb. 20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": "Élaboration de contenus pour les supports internes. Contribution au lancement de la ligne de maroquinerie. Gestion des relations presse garantissant une visibilité. Coordination de la logistique pour les événements VIP."
+    },
+    {
+      "position_title": "Assistant Communication et Événementiel",
+      "institution_name": "Publicis Groupe",
+      "linkedin_url": null,
+      "from_date": "Sept. 20XX",
+      "to_date": "Feb. 20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": "Conception et gestion de campagnes promotionnelles. Contribution à l'organisation d'événements virtuels. Veille concurrentielle et analyse des tendances. Recommandations stratégiques pour les clients."
+    }
+  ],
+  "educations": [
+    {
+      "degree": "Baccalauréat Littéraire",
+      "institution_name": "Lycée Victor Hugo",
+      "linkedin_url": null,
+      "from_date": "20XX",
+      "to_date": "20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": null
+    },
+    {
+      "degree": "Licence en Information et Communication",
+      "institution_name": "Université Sorbonne Nouvelle",
+      "linkedin_url": null,
+      "from_date": "20XX",
+      "to_date": "20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": null
+    },
+    {
+      "degree": "Master 1 en Communication et Médias",
+      "institution_name": "CELSA",
+      "linkedin_url": null,
+      "from_date": "20XX",
+      "to_date": "20XX",
+      "duration": null,
+      "location": "Paris, France",
+      "description": null
+    }
+  ],
+  "skills": [
+    {"category": "Compétences", "items": ["Communication digitale", "Gestion de projet", "Réseaux sociaux", "Événementiel"]},
+    {"category": "Langues", "items": ["Français : Langue maternelle", "Anglais : Niveau avancé", "Espagnol : Niveau intermédiaire"]}
+  ],
+  "projects": [],
+  "interests": ["Equitation", "Bénévolat", "Musique"],
+  "accomplishments": [],
+  "contacts": ["06 66 66 66 66", "prenom.nom@mail.com"]
+}

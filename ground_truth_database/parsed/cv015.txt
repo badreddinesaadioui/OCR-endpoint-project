@@ -1,6 +1,6 @@
-[hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+hello@reallygreatsite.com
 +123-456-7890
-[www.reallygreatsite.com](http://www.reallygreatsite.com/)
+www.reallygreatsite.com
 
 Any City
 
@@ -31,12 +31,12 @@ REFERENCE
 
 JONATHAN CHEVALIER
 
-email : [hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
+email : hello@reallygreatsite.com
 
 CLEMENCE LAURENT
 RH Narbonne et fils
 
-[ite.com](http://ite.com/)
+(website)
 
 Camilla
 

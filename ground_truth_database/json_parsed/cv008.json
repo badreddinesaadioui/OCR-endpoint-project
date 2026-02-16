@@ -1,0 +1,51 @@
+{
+  "linkedin_url": null,
+  "name": "Olivia Wilson",
+  "location": "Any City",
+  "about": "Je suis Olivia Wilson, 26 ans, chargée de communication, passionnée par l'innovation stratégique et l'engagement des audiences. Mon objectif est d'aider les organisations à améliorer leur image et à étendre leur portée avec des conseils et solutions personnalisés.",
+  "open_to_work": null,
+  "experiences": [
+    {
+      "position_title": "Chargée de Communication",
+      "institution_name": "Communication Excellence",
+      "linkedin_url": null,
+      "from_date": "Oct. 2023",
+      "to_date": "Aujourd'hui",
+      "duration": null,
+      "location": "Any City",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean enim turpis, feugiat vitae elit vitae, aliquet dignissim ex. Ut orci ante, pharetra id placerat id, accumsan vel risus. Duis mollis eget orci quis imperdiet."
+    },
+    {
+      "position_title": "Assistante de Communication",
+      "institution_name": "Communication Géniale",
+      "linkedin_url": null,
+      "from_date": "Janv. 2021",
+      "to_date": "Sept. 2023",
+      "duration": null,
+      "location": "Any City",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean enim turpis, feugiat vitae elit vitae, aliquet dignissim ex. Ut orci ante, pharetra id placerat id, accumsan vel risus. Duis mollis eget orci quis imperdiet."
+    },
+    {
+      "position_title": "Apprentie Assistante en Communication",
+      "institution_name": "Communication Super",
+      "linkedin_url": null,
+      "from_date": "Juin 2019",
+      "to_date": "Déc. 2021",
+      "duration": null,
+      "location": "Any City",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean enim turpis, feugiat vitae elit vitae, aliquet dignissim ex. Ut orci ante, pharetra id placerat id, accumsan vel risus. Duis mollis eget orci quis imperdiet."
+    }
+  ],
+  "educations": [
+    {"degree": "Master en Communication et Stratégie Média", "institution_name": "Université de Communication", "linkedin_url": null, "from_date": "2019", "to_date": "2021", "duration": null, "location": "Any City", "description": null},
+    {"degree": "Licence en Relations Publiques et Marketing", "institution_name": "Université de Communication", "linkedin_url": null, "from_date": "2018", "to_date": "2019", "duration": null, "location": "Any City", "description": null}
+  ],
+  "skills": [
+    {"category": "Compétences", "items": ["Création de stratégies de communication", "Gestion des relations publiques", "Marketing digital", "Rédaction et production de contenu", "Analyse de données et mesure de performance"]},
+    {"category": "Qualités", "items": ["Créativité", "Capacité d'adaptation", "Excellentes compétences relationnelles", "Esprit d'équipe", "Orientation résultats"]}
+  ],
+  "projects": [],
+  "interests": [],
+  "accomplishments": [],
+  "contacts": ["+123-456-7890", "hello@reallygreatsite.com"]
+}

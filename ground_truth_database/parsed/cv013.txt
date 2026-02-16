@@ -1,41 +1,40 @@
-Ly
+Olivia Wilson
 
 CONTACT
 
-Q | +123-456-7890
-I~] | [hello@reallygreatsite.com](mailto:hello@reallygreatsite.com)
-Ls | [www.reallygreatsite.com](http://www.reallygreatsite.com/)
-
-9 | 123 Anywhere St., Any City
++123-456-7890
+hello@reallygreatsite.com
+www.reallygreatsite.com
+123 anywhere st. Any City
 
 COMPETENCES
 
-e Création de stratégies de
+¢ Création de stratégies de
 communication
 
-e Gestion des relations
+© Gestion des relations
 publiques
 
-e Marketing digital
+¢ Marketing digital
 
-e Rédaction et production de
+« Rédaction et production de
 contenu
 
-e Analyse de données et
+« Analyse de données et
 mesure de performance
 
 QUALITES
 
 e Créativité
 
-¢ Capacité d'adaptation
+© Capacité d'adaptation
 
 e Excellentes compétences
 relationnelles
 
 e Esprit d'équipe
 
-e Orientation résultats
+© Orientation résultats
 
 OLIVIA WILSON
 
@@ -50,10 +49,9 @@ et solutions personnalisés.
 
 EXPERIENCE PROFESSIONNELLE
 
-Chargée de Communication
+? Chargée de Communication
 
 Communication Excellence | Any City | Oct. 2023 - Aujourd'hui
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Aenean enim turpis, feugiat vitae elit vitae, aliquet dignissim
 ex. Ut orci ante, pharetra id placerat id, accumsan vel risus.
@@ -77,10 +75,11 @@ Duis mollis eget orci quis imperdiet.
 
 FORMATIONS
 
-? Master en Communication et Stratégie Média
-
+Master en Communication et Stratégie Média
 Université de Communication
+
 Any City
+
 2019-2021
 
 Licence en Relations Publiques et Marketing

@@ -4,12 +4,14 @@ import os
 import csv
 import streamlit as st
 
-DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database")
+DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ground_truth_database")
+CV_DIR = os.path.join(DB_DIR, "cv")
+PARSING_TXT_DIR = os.path.join(DB_DIR, "parsed")
 SCREENSHOTS_DIR = os.path.join(DB_DIR, "screenshots")
 METADATA_PATH = os.path.join(DB_DIR, "metadata.csv")
 
 def screenshot_path(base: str) -> str:
-    """Path to database/screenshots/{base}.png if it exists."""
+    """Path to ground_truth_database/screenshots/{base}.png if it exists."""
     return os.path.join(SCREENSHOTS_DIR, f"{base}.png")
 
 st.set_page_config(page_title="Our CVtheque", layout="wide")
@@ -37,7 +39,7 @@ def load_metadata():
 
 metadata = load_metadata()
 if not metadata:
-    st.warning("No metadata found in database/metadata.csv.")
+    st.warning("No metadata found in ground_truth_database/metadata.csv.")
     st.stop()
 
 def _layout_label(layout_type: str) -> str:
@@ -57,8 +59,8 @@ def show_cv_modal(row):
     filename = row["filename"]
     base, ext = os.path.splitext(filename)
     ext = ext.lower().lstrip(".")
-    txt_path = os.path.join(DB_DIR, f"{base}.txt")
-    doc_path = os.path.join(DB_DIR, filename)
+    txt_path = os.path.join(PARSING_TXT_DIR, f"{base}.txt")
+    doc_path = os.path.join(CV_DIR, filename)
     shot_path = screenshot_path(base)
 
     # Document info: multi-line, user-friendly labels
@@ -103,7 +105,7 @@ def show_cv_modal(row):
                 text = f.read()
             st.text_area("Text", text, height=1000, disabled=False, key=f"txt_{base}")
         else:
-            st.info(f"No {base}.txt in database.")
+            st.info(f"No {base}.txt in ground_truth_database/parsed.")
 
 # Grid: 3 per row; each card = large thumbnail + label + View
 st.subheader("CVs")
@@ -119,7 +121,7 @@ for i in range(0, len(metadata), N_COLS):
         filename = row["filename"]
         base, ext = os.path.splitext(filename)
         ext = ext.lower().lstrip(".")
-        doc_path = os.path.join(DB_DIR, filename)
+        doc_path = os.path.join(CV_DIR, filename)
         shot_path = screenshot_path(base)
         with col:
             with st.container(border=True):
