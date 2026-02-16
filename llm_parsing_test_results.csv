@@ -1,0 +1,114 @@
+cv_filename,model_name,language,layout_type,accuracy_pct,time_seconds,cost_usd,json_valid,schema_valid,error,run_at
+cv016.pdf,Gemini 2.5 Flash,en,mono,89.77272727272727,7.571671667000373,0.001,1,1,,2026-02-16T21:18:38.531933Z
+cv016.pdf,Claude 4.5 Haiku,en,mono,96.5909090909091,6.176878416999898,0.002,1,1,,2026-02-16T21:18:38.530162Z
+cv016.pdf,Gemini 4o nano,en,mono,,60.50634333400012,0.001,0,0,The read operation timed out,2026-02-16T21:18:38.524614Z
+cv015.docx,Gemini 2.5 Flash,fr,mono,71.05263157894737,11.92220987499968,0.001,1,1,,2026-02-16T21:17:38.015455Z
+cv015.docx,Claude 4.5 Haiku,fr,mono,71.05263157894737,5.431498124999962,0.002,1,1,,2026-02-16T21:17:38.014284Z
+cv015.docx,Gemini 4o nano,fr,mono,78.94736842105263,9.997116124999593,0.001,1,0,"Additional properties are not allowed ('additionalProperties' was unexpected)
+
+Failed validating 'additionalProperties' in schema['properties']['experiences']['items']:
+    {'type': 'object',
+     'properties': {'position_title': {'type': 'string'},
+                    'institution_name': {'type': 'string'},
+                    'linkedin_url': {'type': ['string', 'null']},
+                    'from_date': {'type': ['string', 'null']},
+                    'to_date': {'type': ['string', 'null']},
+                    'duration': {'type': ['string', 'null']},
+                    'location': {'type': ['string', 'null']},
+                    'description': {'type': ['string', 'null']}},
+     'required': ['position_title',
+                  'institution_name',
+                  'linkedin_url',
+                  'from_date',
+                  'to_date',
+                  'duration',
+                  'location',
+                  'description'],
+     'additionalProperties': False}
+
+On instance['experiences'][3]:
+    {'position_title': 'COMPTABLE FISCALISTE',
+     'institution_name': 'Narbonne et fils',
+     'linkedin_url': None,
+     'from_date': '2009',
+     'to_date': '2010',
+     'duration': None,
+     'location': 'Any City',
+     'description': ""En tant que Comptable Fiscaliste, j'ai géré les ""
+                    'déclarations fiscales, optimise la charge fiscale des '
+                    'entreprises et élaboré des strategies pour minimiser '
+                    'les risques.',
+     'additionalProperties': {}}",2026-02-16T21:17:38.012203Z
+cv013.pdf,Gemini 2.5 Flash,fr,multi,84.7457627118644,11.510289750000084,0.001,1,1,,2026-02-16T21:17:26.062188Z
+cv013.pdf,Claude 4.5 Haiku,fr,multi,91.52542372881356,5.36949604199981,0.002,1,1,,2026-02-16T21:17:26.061518Z
+cv013.pdf,Gemini 4o nano,fr,multi,84.7457627118644,9.797311374999481,0.001,1,1,,2026-02-16T21:17:26.060405Z
+cv012.pdf,Gemini 2.5 Flash,ar,multi,48.97959183673469,6.92692845900001,0.001,1,1,,2026-02-16T21:17:14.526895Z
+cv012.pdf,Claude 4.5 Haiku,ar,multi,42.857142857142854,5.112876165999296,0.002,1,1,,2026-02-16T21:17:14.526106Z
+cv012.pdf,Gemini 4o nano,ar,multi,69.38775510204081,8.627973999999995,0.001,1,1,,2026-02-16T21:17:14.524542Z
+cv011.pdf,Gemini 2.5 Flash,fr,multi,,16.61783312500029,0.001,0,0,No valid JSON found in response,2026-02-16T21:17:05.873136Z
+cv011.pdf,Claude 4.5 Haiku,fr,multi,,60.50374612499945,0.002,0,0,The read operation timed out,2026-02-16T21:17:05.872308Z
+cv011.pdf,Gemini 4o nano,fr,multi,,60.50491562499974,0.001,0,0,The read operation timed out,2026-02-16T21:17:05.870866Z
+cv010.pdf,Gemini 2.5 Flash,ar,mono,42.857142857142854,9.1254411660002,0.001,1,1,,2026-02-16T21:16:05.364237Z
+cv010.pdf,Claude 4.5 Haiku,ar,mono,40.816326530612244,5.657414958999652,0.002,1,1,,2026-02-16T21:16:05.363354Z
+cv010.pdf,Gemini 4o nano,ar,mono,40.816326530612244,7.478317541000251,0.001,1,1,,2026-02-16T21:16:05.361799Z
+cv009.pdf,Gemini 2.5 Flash,en,infographic,82.22222222222223,4.905310541999825,0.001,1,1,,2026-02-16T21:15:56.203357Z
+cv009.pdf,Claude 4.5 Haiku,en,infographic,88.88888888888889,4.11687479200009,0.002,1,1,,2026-02-16T21:15:56.201970Z
+cv009.pdf,Gemini 4o nano,en,infographic,,16.723280500000328,0.001,0,0,No valid JSON found in response,2026-02-16T21:15:56.199005Z
+cv008.jpg,Gemini 2.5 Flash,fr,multi,93.22033898305085,10.025601999999708,0.001,1,1,,2026-02-16T21:15:39.472863Z
+cv008.jpg,Claude 4.5 Haiku,fr,multi,96.61016949152543,4.9276669999999285,0.002,1,1,,2026-02-16T21:15:39.470662Z
+cv008.jpg,Gemini 4o nano,fr,multi,,60.505925959000706,0.001,0,0,The read operation timed out,2026-02-16T21:15:39.466635Z
+cv007.pdf,Gemini 2.5 Flash,en,multi,,16.023581792000186,0.001,0,0,No valid JSON found in response,2026-02-16T21:14:38.958527Z
+cv007.pdf,Claude 4.5 Haiku,en,multi,77.66990291262135,11.885310583000319,0.002,1,1,,2026-02-16T21:14:38.957961Z
+cv007.pdf,Gemini 4o nano,en,multi,,17.001947083000232,0.001,0,0,No valid JSON found in response,2026-02-16T21:14:38.956496Z
+cv006.png,Gemini 2.5 Flash,ar,multi,,14.42493070799992,0.001,0,0,No valid JSON found in response,2026-02-16T21:14:21.952560Z
+cv006.png,Claude 4.5 Haiku,ar,multi,,60.50486025000009,0.002,0,0,The read operation timed out,2026-02-16T21:14:21.951355Z
+cv006.png,Gemini 4o nano,ar,multi,,60.5055438749996,0.001,0,0,The read operation timed out,2026-02-16T21:14:21.949705Z
+cv005.pdf,Gemini 2.5 Flash,en,mono,77.14285714285714,12.145483582999987,0.001,1,1,,2026-02-16T21:13:21.442177Z
+cv005.pdf,Claude 4.5 Haiku,en,mono,82.85714285714286,9.13479662499958,0.002,1,1,,2026-02-16T21:13:21.441253Z
+cv005.pdf,Gemini 4o nano,en,mono,72.85714285714286,15.206165915999918,0.001,1,1,,2026-02-16T21:13:21.439959Z
+cv004.png,Gemini 2.5 Flash,ar,mono,78.72340425531915,9.276933209000163,0.001,1,1,,2026-02-16T21:13:06.213335Z
+cv004.png,Claude 4.5 Haiku,ar,mono,85.1063829787234,6.229481042000771,0.002,1,1,,2026-02-16T21:13:06.212414Z
+cv004.png,Gemini 4o nano,ar,mono,89.36170212765957,9.503414499999963,0.001,1,1,,2026-02-16T21:13:06.210686Z
+cv003.docx,Gemini 2.5 Flash,fr,infographic,54.09836065573771,11.275032625000676,0.001,1,1,,2026-02-16T21:12:56.677729Z
+cv003.docx,Claude 4.5 Haiku,fr,infographic,,60.50591774999975,0.002,0,0,The read operation timed out,2026-02-16T21:12:56.675854Z
+cv003.docx,Gemini 4o nano,fr,infographic,,60.50656195800002,0.001,0,0,The read operation timed out,2026-02-16T21:12:56.673262Z
+cv002.docx,Gemini 2.5 Flash,fr,multi,92.53731343283582,10.917378957999972,0.001,1,1,,2026-02-16T21:11:56.162034Z
+cv002.docx,Claude 4.5 Haiku,fr,multi,95.5223880597015,4.929882291000467,0.002,1,1,,2026-02-16T21:11:56.160957Z
+cv002.docx,Gemini 4o nano,fr,multi,89.55223880597015,8.895707625000796,0.001,1,0,"Additional properties are not allowed ('additionalProperties' was unexpected)
+
+Failed validating 'additionalProperties' in schema['properties']['experiences']['items']:
+    {'type': 'object',
+     'properties': {'position_title': {'type': 'string'},
+                    'institution_name': {'type': 'string'},
+                    'linkedin_url': {'type': ['string', 'null']},
+                    'from_date': {'type': ['string', 'null']},
+                    'to_date': {'type': ['string', 'null']},
+                    'duration': {'type': ['string', 'null']},
+                    'location': {'type': ['string', 'null']},
+                    'description': {'type': ['string', 'null']}},
+     'required': ['position_title',
+                  'institution_name',
+                  'linkedin_url',
+                  'from_date',
+                  'to_date',
+                  'duration',
+                  'location',
+                  'description'],
+     'additionalProperties': False}
+
+On instance['experiences'][2]:
+    {'position_title': 'Assistant Communication et Événementiel',
+     'institution_name': 'Publicis Groupe',
+     'linkedin_url': None,
+     'from_date': 'Sept. 20XX',
+     'to_date': 'Feb. 20XX',
+     'duration': None,
+     'location': 'Paris, France',
+     'description': 'Conception et gestion de campagnes promotionnelles.\n'
+                    ""Contribution à l'organisation d'événements virtuels.\n""
+                    'Veille concurrentielle et analyse des tendances.\n'
+                    'Recommandations stratégiques pour les clients.',
+     'additionalProperties': False}",2026-02-16T21:11:56.158826Z
+cv001.docx,Gemini 2.5 Flash,fr,mono,,16.335855125000307,0.001,0,0,No valid JSON found in response,2026-02-16T21:11:45.211456Z
+cv001.docx,Claude 4.5 Haiku,fr,mono,94.21487603305785,13.715330166000058,0.002,1,1,,2026-02-16T21:11:45.210025Z
+cv001.docx,Gemini 4o nano,fr,mono,,16.03254399999969,0.001,0,0,No valid JSON found in response,2026-02-16T21:11:45.206700Z

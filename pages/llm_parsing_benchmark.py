@@ -273,16 +273,45 @@ def _parse_json_from_response(text: str) -> tuple[Optional[dict], Optional[str]]
                     return json.loads(text[idx:end].strip()), None
                 except json.JSONDecodeError:
                     pass
+    # Try extracting a single JSON object: first { to matching }
+    i = text.find("{")
+    if i != -1:
+        depth = 0
+        for j in range(i, len(text)):
+            if text[j] == "{":
+                depth += 1
+            elif text[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[i : j + 1]), None
+                    except json.JSONDecodeError:
+                        pass
+                    break
     return None, "No valid JSON found in response"
 
 
-def _validate_schema(data: dict) -> tuple[bool, Optional[str]]:
+def _strip_extra_keys_to_schema(data: Any, schema: dict) -> Any:
+    """Return a copy of data with only keys allowed by schema (removes e.g. 'additionalProperties' from model output)."""
+    if schema.get("type") == "object" and isinstance(data, dict):
+        props = schema.get("properties") or {}
+        return {k: _strip_extra_keys_to_schema(v, props[k]) for k, v in data.items() if k in props}
+    if schema.get("type") == "array" and isinstance(data, list):
+        item_schema = schema.get("items") or {}
+        return [_strip_extra_keys_to_schema(item, item_schema) for item in data]
+    return data
+
+
+def _validate_schema(data: dict) -> tuple[bool, Optional[str], Optional[dict]]:
+    """Returns (valid, error_message, cleaned_dict). When valid, use cleaned_dict (schema-only keys) for storage."""
     try:
         import jsonschema
-        jsonschema.validate(instance=data, schema=RESUME_EXTRACTION_SCHEMA)
-        return True, None
+        # Strip keys not in schema so model output like "additionalProperties": {} doesn't fail
+        cleaned = _strip_extra_keys_to_schema(data, RESUME_EXTRACTION_SCHEMA)
+        jsonschema.validate(instance=cleaned, schema=RESUME_EXTRACTION_SCHEMA)
+        return True, None, cleaned
     except Exception as e:
-        return False, str(e)
+        return False, str(e), None
 
 
 def _flatten_leaves(obj: Any, path: str = "") -> list[tuple[str, Any]]:
@@ -513,10 +542,13 @@ def _run_openai(model_id: str, ocr_text: str, api_key: str, result_holder: list,
                     out["error"] = err
                     parsed = None
                 if parsed is not None:
-                    out["parsed"] = parsed
                     out["json_valid"] = True
-                    ok, schema_err = _validate_schema(parsed)
+                    ok, schema_err, cleaned = _validate_schema(parsed)
                     out["schema_valid"] = ok
+                    if ok and cleaned is not None:
+                        out["parsed"] = cleaned
+                    else:
+                        out["parsed"] = parsed
                     if not ok:
                         out["error"] = schema_err
             result_holder[index] = out
@@ -622,10 +654,13 @@ def _run_openai(model_id: str, ocr_text: str, api_key: str, result_holder: list,
                         )
                     parsed = None
             if parsed is not None:
-                out["parsed"] = parsed
                 out["json_valid"] = True
-                ok, schema_err = _validate_schema(parsed)
+                ok, schema_err, cleaned = _validate_schema(parsed)
                 out["schema_valid"] = ok
+                if ok and cleaned is not None:
+                    out["parsed"] = cleaned
+                else:
+                    out["parsed"] = parsed
                 if not ok:
                     out["error"] = schema_err
     except Exception as e:
@@ -670,7 +705,7 @@ def _run_replicate(model_id: str, ocr_text: str, replicate_token: str, result_ho
         prev = os.environ.get("REPLICATE_API_TOKEN")
         try:
             os.environ["REPLICATE_API_TOKEN"] = replicate_token
-            wait_seconds = 60
+            wait_seconds = 120  # avoid "The read operation timed out" on slow runs
             if "gemini" in replicate_model.lower():
                 run_input = {
                     "prompt": user,
@@ -718,10 +753,13 @@ def _run_replicate(model_id: str, ocr_text: str, replicate_token: str, result_ho
         if err:
             out["error"] = err
         else:
-            out["parsed"] = parsed
             out["json_valid"] = True
-            ok, schema_err = _validate_schema(parsed)
+            ok, schema_err, cleaned = _validate_schema(parsed)
             out["schema_valid"] = ok
+            if ok and cleaned is not None:
+                out["parsed"] = cleaned
+            else:
+                out["parsed"] = parsed
             if not ok:
                 out["error"] = schema_err
     except Exception as e:
