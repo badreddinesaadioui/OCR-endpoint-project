@@ -1,0 +1,121 @@
+Etudiante Ingénieur - MSc Consulting – ENSTA Paris
+
+[] +33 (0) 6 29 32 00 66 | Paris, France | [] [ghitanahli0@gmail.com](mailto:ghitanahli0@gmail.com)[]
+
+PROFIL
+
+Ingénieure généraliste de l’école Centrale et titulaire d’un double diplôme Master COSI (Conseil en Organisation, Stratégie et Systèmes d'Information), je me spécialise en management de projet, transformation digitale, conseil IT et data management. Je recherche un stage de fin d'études de 6 mois à partir de Mars 2026.
+
+EXPE´RIENCES
+
+Groupe BPCE Paris, France
+
+Product Owner Data Avril - Sept 2025(5mois)
+
+- Optimisation de l’outil Planon : Analyse des incidents, recueil des
+besoins métiers et formalisation des demandes d’évolution auprès
+des entités du Groupe (Banques Populaires et Caisses d’Epargne).
+- Contrôle de la qualité de données et coordination projet : Contrôle
+de la qualité des données dans l’outil Planon et contribution à la
+priorisation des besoins fonctionnels en collaboration avec les
+parties prenantes internes.
+
+Fnac Darty Paris, France
+
+Consultante Janvier - Mars 2025 (3mois)
+
+- Analyse stratégique d'une offre de service : Réalisation d’une
+étude, dans le cadre du Master COSI, sur la catégorie Téléphonie
+Mobile du groupe Fnac Darty et élaboration d’une trajectoire
+stratégique visant à optimiser l’offre d’assurance associée.
+
+DIFMEDI Casablanca, Maroc
+
+Consultante en stratégie Avril - Juillet 2024 (4 mois)
+
+- Étude de marché : Réalisation d’une analyse détaillée du secteur des
+dispositifs médicaux et du diagnostic in-vitro au Maroc.
+- Veille et recommandations stratégiques : Proposition de trois axes
+de croissance pour améliorer la compétitivité de l’entreprise et
+préparation de benchmarks concurrentiels et des présentations pour
+orienter les décisions stratégiques.
+
+TNP Consultants Casablanca, Maroc
+
+Consultante Juillet - Août 2023 (2 mois)
+
+- Réalisation de propositions commerciales et recommandations :
+Contribution à la réponse à 2 appels d’offres et élaboration d’une
+solution adaptée aux besoins spécifiques d’un client banque.
+- Extraction et prétraitement des données : Gestion des données pour
+garantir des informations de qualité pour l’analyse.
+
+Junior Enterprise Centrale Casablanca JECC Casablanca, Maroc
+
+Analyste de données Février - Juillet 2023 (6 mois)
+
+- Stratégie de marché : Réalisation d’une analyse stratégique pour le
+client TRIA basée sur plus de 600 enquêtes de marché ciblées,
+développement de dashboards sur Power BI, et élaboration d’un plan
+d’affaires sur six mois.
+
+FORMATION
+
+ENSTA Paris - Institut Polytechnique de Paris Paris, France
+
+Master COSI - Conseil en Organisation, Stratégie et Systèmes
+d’Information 2024 – en cours
+
+- Transformation Digitale, SI, Gestion de Risques, Management de
+Projet et Conduite du Changement et AMOA
+
+Ecole Centrale Casablanca – Groupe CentraleSupélec Casablanca, Maroc
+
+Diplôme d’ingénieur généraliste, accrédité EUR-ACE et reconnu par l’État
+français 2022 – en cours
+
+- Programmation (Python, MATLAB), IA, Big Data et IoT, Gestion de
+projets technologiques, Innovation, Entrepreneuriat et Analyse de
+systèmes complexes.
+
+PROJETS
+
+PredictA Industry : Co-fondation d’un projet de startup spécialisée en maintenance prédictive en temps réel.
+
+Étude de marché, prospection et négociation avec des entreprises pour
+favoriser l’adoption de la solution.
+
+Outils : Python · Streamlit · Benchmarks
+
+Cybersécurité avec Gen IA : Développement d’un modèle GAN pour la
+génération de signaux synthétiques.
+
+Outils : Python · CNN · InceptionV3 · GANs
+
+Simulation de jeu d’entreprise Kalypso : Plans de production, détection
+de tendances de marché et prévisions financières.
+
+Outils : Business Intelligence · Analytics · Gestion stratégique
+
+COMPE´TENCES
+
+Compétences transversales : Capacité à travailler en projet
+pluridisciplinaire - Proactive - Rigoureuse - Esprit analytique Outils /
+Langages de programmation : Excel, Power BI, Python (Numpy, Pandas,
+TensorFlow, Pytorch), VBA, R
+
+Certifications : Google Data Analytics - Google Project Management -
+LearnQuest Scrum Master
+
+Langues : Anglais (TOEIC C1 - 970/990), Français (bilingue), Arabe
+(natif)
+
+ACTIVITE´S EXTRACURRICULAIRES
+
+Présidente du Bureau des Etudiants de l’Ecole Centrale Casablanca (BDE).
+
+Responsable des partenariats de la Junior Entreprise Centrale JECC.
+
+Responsable de la prospection du Forum ECC-Entreprises.
+
+Passion pour le sport : Équitation, tennis de table et football.

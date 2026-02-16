@@ -1,0 +1,251 @@
+D [juliette@julietteregimbal.ca](mailto:juliette@julietteregimbal.ca)
+@ www [julietteregimbal.ca](http://julietteregimbal.ca/)
+
+| | © JRegimbal
+J u | lette Reg l mM ba | @[https://orcid](https://orcid/). org, (0000-0003-4002.046X
+
+2021-Présent
+
+2015-2020
+
+De
+Enseignement
+Langages de
+
+programmation
+
+Informatique
+
+Méthodes de
+recherche
+
+Langues
+
+2020-2025
+
+Misc.
+
+2023
+
+2021-Présent
+
+2020
+
+Education
+
+Ph.D. Génie électrique, Université McGill, Montréal QC
+
+Recherche en interaction humain-machine axée sur les outils de conception audio-haptique et
+l'accessibilité web pour les personnes aveugles et malvoyantes. Supervisée par Professeur Jeremy
+Cooperstock au Shared Reality Lab.
+
+B.Ing. Génie informatique, Université McGill, Montréal QC
+
+Compétences
+
+Conception de cours, Apprentissage active, Pédagogie inversée, Understanding by design,
+Universal design for learning
+
+JavaScript, Python, HTML/CSS, Java, C/C++, SuperCollider, Rust, Pure Data
+
+Réseautage, Systemes UNIX (surtout Linux), Docker, iptables/ufw, Services web,
+Développement web, Node.js, PyTorch, LangChain, OpenStack, Proxmox, Android,
+SQL, noSQL, Développement agile (Scrum), Micro-contréleurs et Git
+
+Conception centrée sur I’humain, Entretiens semi-structurés, Analyse de protocole, Co-
+design, Création des personas, Analyse thématique réflexive, Test Mann-Whitney, TOST
+
+Francais (professionnel), Anglais (langue maternelle)
+
+Expérience
+
+Enseignement
+
+Auxiliaire d’enseignement, Université McGill
+
+o AE en Interaction humain-machine, Systémes embarqués, Haptique, et Traitement paralléle.
+
+Conférences invitées
+
+© Conférences interactives sur I'haptique pour le cours d'Interaction humain-machine a McGill,
+2022-2024.
+FACC 511 - Instructional Design for Engineering Education, Université McGill
+
+© Cours facultatif sur la pédagogie en génie.
+
+Professionnel
+
+Responsable d’architecture, Projet IMAGE, Université McGill
+
+© Concu et implémenté |’architecture logiciel distribué avec Docker, Python, Typescript.
+© Concu et révisé l'implémentation de nouvelles fonctionnalités au systéme.
+
+© Collaboration avec d'autres développeurs, chercheurs en IHM; mentorat des stagiaires.
+Consultante indépendante, Measuring Polyphony, Université Brandeis
+
+© Développé |I’éditeur Measuring Polyphony avec Typescript, Angular.
+© Concu et évalué itérativement les fonctionnalités pour répondre aux besoins des utilisateurs.
+
+1/3
+
+2018-2020
+
+Eté 2016
+a
+
+2025-Present
+
+2024-Présent
+
+2023-Présent
+
+2021-Présent
+
+2020-2021
+
+2019
+
+2024
+
+Assistante de recherche occasionnelle, Ecole de musique Schulich, Université McGill,
+
+Montréal QC
+
+© Travaillé avec des parties prenantes pour créer des applications pour la reconnaissance optique
+de la musique.
+
+© Contribué 4 Verovio (C++), Neon (Typescript) et d'autres projets.
+
+© Maintenu divers applications serveurs écrit en Python.
+
+Stagiaire, Systémes électroniques Matrox Ltée, Dorval QC
+
+Projets de recherche
+
+LLMs pour la conception haptique aux jeux vidéos, Méthodes mixtes
+
+o IA générative (Llama 3.2, Audiogen) pour créer des effets haptiques vibrotactiles.
+
+© Mené un atelier avec des étudiants en jeux vidéos qui ont utilisé IIA pour concevoir des effets
+destinés un jeu.
+
+© Déterminé que les effets générés par |'lA sont plausibles, mais les utilisateurs naifs ont besoin
+de plus d'aide pour réussir.
+
+Apprentissage par renforcement appliqué a la création audio-haptique, Qualitative
+
+© Interaction humain-lA en conception haptique et audio-haptique.
+
+© Congu des agents pour encourager les utilisateur 4 explorer des idées grace aux actions semi-
+autonomes.
+
+© Identifié des facteurs pour améliorer le soutien donné par ce type d’agent co-créatif.
+
+Haptic Authoring Toolbox, Méthodes mixtes
+
+© Développé une collection libre de l'information sur les outils de conception pour les effets
+haptiques.
+
+© Evalué et amélioré la collection grace aux tests d’utilisabilité et des entretiens semi-structurés.
+
+© Nos résultats aident les professionnels en haptique a planifier de nouveaux projets de recherche
+et de trouver des outils qui répondent a leurs besoins.
+
+Internet Multimodal Access to Graphical Exploration, Qualitative
+
+© IMAGE vise a produire automatiquement des interprétations riches de contenu web visuel
+pour les personnes aveugles.
+
+© Concu et implémenté le systéme informatique pour répondre aux besoins des professionnels
+et des utilisateurs.
+
+© Implémentation du serveur (Docker, Node.js, Python) et du client (Typescript).
+
+© Création des interprétations de contenu visuel grace a |'ouie et au toucher.
+
+o Raffiné le systéme grace aux entretiens avec les membres de |’équipe IMAGE.
+
+Becoming, Expérience en réalité virtuelle
+
+oO Becoming était une expérience en réalité virtuelle (Unreal Engine) basée sur un poéme par
+Rumi.
+
+© Conception et implémentation des effets haptiques en C++ et en C# qui correspondent au
+contenu visuel et musical immersif.
+
+© Collaboration avec des ingénieurs et des musiciens au Sonic Arts R&D Group, UC San Diego.
+
+Alarmes haptiques pour les USI, Quantitative
+
+© Congu des alarmes haptiques (vibration) pour utilisation dans les environnements bruyants
+(p.ex., les USI, salles opératoires).
+
+© Développé une application Android pour simuler les alarmes et collecter des données lors d'une
+étude.
+
+Bourses et prix
+
+Prix de meilleure affiche (Best Poster) 4 EuroHaptics pour [1]
+
+2022-2026
+2022-2025
+2021-2025
+
+a
+
+19]
+
+[10]
+
+[11]
+
+Bourse de recherche doctorale, FRQNT, no. 315050
+Bourse d'études supérieures du Canada (doctorale), CRSNG, no. 5069236
+Bourse Vadasz, McGill Engineering Doctoral Award
+
+Publications et brevets
+
+J. Regimbal and J. R. Cooperstock, “Investigating Haptic Co-creation with Reinforce-
+ment Learning,” in Haptics: Understanding Touch; Technology and Systems; Applica-
+tions and Interaction, vol. 14769, pp. 448-454, Springer Nature Switzerland, 2025.
+
+J. Regimbal, Z. McLennan, G. Vigliensoni, A. Tran, and |. Fujinaga, “Neon2: A verovio-
+based square-notation editor.” Music Encoding Conference 2019.
+
+J. Regimbal, G. Vigliensoni, C. Hutnyk, and |. Fujinaga, “IIIF-based lyric and neume
+editor for square-notation manuscripts,” in Music Encoding Conference Proceedings
+2020, pp. 15-18.
+
+J. Regimbal, N. Radi, A. Weill-Duflos, and J. R. Cooperstock, “Single-actuator simul-
+taneous haptic rendering for multiple vital signs,” in HC/ International 2020 - Late
+Breaking Papers: Multimodality and Intelligence, 2020.
+
+J. Regimbal and M. M. Wanderley, “Interpolating audio and haptic control spaces,” in
+NIME 2021, PubPub.
+
+Y. Yoo, J. Regimbal, and J. R. Cooperstock, “Identification and information transfer
+of multidimensional tactons presented by a single vibrotactile actuator,” in 2021 JEEE
+World Haptics Conference (WHC), IEEE, jul 2021.
+
+J. Cooperstock, A. Weill-Duflos, J. Regimbal, N. Radi, J. Blum, P. Alirezaee, and
+Y. Zhang, “Methods and systems for controlling a haptic display,” July 29 2025. US
+Patent 12,373,032.
+
+H. Elbaggari, R. Guerra, S. Knappe, and J. Regimbal, “Crescendo: Haptic exploration
+of scores for novice musicians with dyslexia,” in 2021 IEEE World Haptics Conference
+(WHC), IEEE, jul 2021.
+
+S. Yadegari, J. Burnett, E. Murakami, L. Pisha, F. Talenti, J. Regimbal, and Y. Yoo,
+“Becoming: An Interactive Musical Journey in VR,” in Special Interest Group on Com-
+puter Graphics and Interactive Techniques Conference Immersive Pavilion, (Vancouver
+BC Canada), pp. 1-2, ACM, Aug. 2022.
+
+J. Regimbal, J. R. Blum, and J. R. Cooperstock, “IMAGE: A Deployment Framework
+or Creating Multimodal Experiences of Web Graphics,” in Proceedings of the 19th
+International Web for All Conference, (Lyon France), pp. 1-5, ACM, Apr. 2022.
+
+J. Regimbal, J. R. Blum, C. Kuo, and J. R. Cooperstock, “IMAGE: An Open-Source,
+Extensible Framework for Deploying Accessible Audio and Haptic Renderings of Web
+Graphics,” ACM Transactions on Accessible Computing, vol. 17, pp. 1-17, June 2024.
+
+3/3
