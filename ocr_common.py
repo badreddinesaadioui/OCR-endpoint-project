@@ -354,6 +354,11 @@ def run_mistral_ocr(pdf_bytes: bytes, filename: str, api_key: str) -> dict:
 # ---------------------------------------------------------------------------
 # Replicate text-extract-ocr
 # ---------------------------------------------------------------------------
+# Why PDF to Mistral but images to Replicate?
+# - Mistral OCR API accepts a document (PDF) directly, so we send pdf_bytes.
+# - Replicate's abiruyt/text-extract-ocr accepts only a single image per call (no PDF).
+# So we render the PDF to one image per page, call the API once per page, then
+# concatenate the text so CER/WER are computed on the full document.
 REPLICATE_COST_TEXT_EXTRACT = 0.0001
 REPLICATE_WAIT_SECONDS = 60
 REPLICATE_DATA_URI_MAX = 1_000_000
@@ -424,14 +429,43 @@ def _replicate_image_data_uri_under_limit(image_bytes: bytes) -> Optional[str]:
 
 
 def run_replicate_text_extract_ocr(pdf_bytes: bytes, api_token: str) -> dict:
+    """Run Replicate text-extract-ocr on all pages (one API call per page), then concatenate.
+    The model accepts only one image per call, so we send each page as an image for fair CER/WER."""
     images = pdf_to_images(pdf_bytes)
     if not images:
         return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "No pages in PDF"}
-    data_uri = _replicate_image_data_uri_under_limit(images[0])
-    if not data_uri:
-        return {"text": "", "cost_usd": 0.0, "time_seconds": 0.0, "error": "First page image could not be compressed under 1MB"}
-    input_dict = {"image": data_uri}
-    return _replicate_run(REPLICATE_TEXT_EXTRACT_OCR, input_dict, api_token, REPLICATE_COST_TEXT_EXTRACT)
+    parts = []
+    total_cost = 0.0
+    total_time = 0.0
+    first_error = None
+    for i, img_bytes in enumerate(images):
+        data_uri = _replicate_image_data_uri_under_limit(img_bytes)
+        if not data_uri:
+            parts.append(f"[page {i + 1} skipped: image could not be compressed under 1MB]")
+            continue
+        result = _replicate_run(
+            REPLICATE_TEXT_EXTRACT_OCR,
+            {"image": data_uri},
+            api_token,
+            REPLICATE_COST_TEXT_EXTRACT,
+        )
+        total_cost += result.get("cost_usd") or 0.0
+        total_time += result.get("time_seconds") or 0.0
+        if result.get("error"):
+            if first_error is None:
+                first_error = result["error"]
+            parts.append(f"[page {i + 1} error: {result['error']}]")
+        else:
+            parts.append((result.get("text") or "").strip())
+    text = "\n\n".join(parts).strip()
+    return {
+        "text": text,
+        "cost_usd": total_cost,
+        "time_seconds": total_time,
+        "error": first_error if not text and first_error else None,
+        "api_summary": None,
+        "raw_api_response": None,
+    }
 
 
 # ---------------------------------------------------------------------------

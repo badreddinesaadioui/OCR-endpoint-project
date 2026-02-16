@@ -411,17 +411,26 @@ REPLICATE_COST_DEEPSEEK_OCR = 0.006
 REPLICATE_COST_MARKER = 0.01
 
 # Replicate: single request per model; no retries (user can send multiple in parallel).
+# API allows wait between 1 and 60 only; cannot use >60 for slow models like deepseek-ocr.
 REPLICATE_WAIT_SECONDS = 60
+# HTTP read timeout must be >= wait; default client uses 30s and causes "The read operation timed out" for slow models.
+REPLICATE_HTTP_READ_TIMEOUT = 120.0
 
 def _replicate_run(model: str, input_dict: dict, api_token: str, cost_usd: float = 0.0) -> dict:
     """Run Replicate model once; returns { "text", "cost_usd", "time_seconds", "error", "api_summary", "raw_api_response" }. No retries—show result or error as soon as it returns."""
+    wait = REPLICATE_WAIT_SECONDS
     out = {"text": "", "cost_usd": cost_usd, "time_seconds": 0.0, "error": None, "api_summary": None, "raw_api_response": None}
     t0 = time.perf_counter()
     prev = os.environ.get("REPLICATE_API_TOKEN")
     try:
         os.environ["REPLICATE_API_TOKEN"] = api_token
         import replicate
-        raw = replicate.run(model, input=input_dict, wait=REPLICATE_WAIT_SECONDS)
+        import httpx
+        client = replicate.Client(
+            api_token=api_token,
+            timeout=httpx.Timeout(REPLICATE_HTTP_READ_TIMEOUT, read=REPLICATE_HTTP_READ_TIMEOUT),
+        )
+        raw = client.run(model, input=input_dict, wait=wait)
         out["raw_api_response"] = _raw_response_to_json(raw)
         if isinstance(raw, str):
             out["text"] = raw.strip()
@@ -619,7 +628,8 @@ def render_model_result(name: str, m: dict, r: dict, key_prefix: str) -> None:
     st.metric("CER", f"{m['cer_pct']:.1f}%")
     st.metric("WER", f"{m['wer_pct']:.1f}%")
     st.metric("Layout accuracy", f"{m['layout_accuracy_pct']:.1f}%")
-    st.metric("Speed", f"{m['time_seconds']:.2f} s")
+    speed_str = "≥60 (timed out)" if (m.get("error") and "timed out" in (m.get("error") or "").lower()) else f"{m['time_seconds']:.2f} s"
+    st.metric("Speed", speed_str)
     st.metric("Cost", f"${m['cost_usd']:.4f}")
     # 3) Extracted text (and missing words) in expander
     with st.expander("Extracted text"):
@@ -761,7 +771,7 @@ else:
                     with open(txt_path, "r", encoding="utf-8") as f:
                         ground_truth = f.read()
                     # Key per CV so changing selection updates the text area
-                    st.text_area("Ground truth", ground_truth, height=200, disabled=False, key=f"gt_library_{base}")
+                    st.text_area("Ground truth", ground_truth, height=400, disabled=False, key=f"gt_library_{base}")
                 else:
                     st.info(f"No {base}.txt in ground_truth_database/parsed.")
                     ground_truth = ""
@@ -873,9 +883,11 @@ else:
         table_rows = []
         for i, name in enumerate(data["models"]):
             m = data["metrics_list"][i]
+            is_timeout = m.get("error") and "timed out" in (m.get("error") or "").lower()
+            time_display = "≥60 (timed out)" if is_timeout else f"{m['time_seconds']:.2f}"
             table_rows.append({
                 "Model": name,
-                "Time (s)": f"{m['time_seconds']:.2f}",
+                "Time (s)": time_display,
                 "Cost ($)": f"{m['cost_usd']:.4f}",
                 "CER (%)": f"{m['cer_pct']:.1f}",
                 "WER (%)": f"{m['wer_pct']:.1f}",

@@ -262,12 +262,6 @@ else:
 # ---------- Results from SQLite ----------
 st.divider()
 st.subheader("Results")
-with st.expander("Why do I see errors in the table?"):
-    st.markdown("""
-- **The read operation timed out** — The model took longer than the wait limit (now 120s). Slow CVs or Replicate load can cause this; re-run or try again later.
-- **No valid JSON found in response** — The model returned text that wasn’t valid JSON (e.g. markdown or commentary). We try to extract JSON from code blocks or from the first `{` to the last `}`.
-- **Additional properties are not allowed** — The model added extra keys (e.g. `additionalProperties`) to the JSON. We now strip unknown keys before validation, so this should appear less often.
-""")
 init_db()
 rows = fetch_all_results()
 if not rows:

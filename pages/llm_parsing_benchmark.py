@@ -705,7 +705,8 @@ def _run_replicate(model_id: str, ocr_text: str, replicate_token: str, result_ho
         prev = os.environ.get("REPLICATE_API_TOKEN")
         try:
             os.environ["REPLICATE_API_TOKEN"] = replicate_token
-            wait_seconds = 120  # avoid "The read operation timed out" on slow runs
+            # Replicate API: Prefer: wait=x must be between 1 and 60 (seconds)
+            wait_seconds = 60
             if "gemini" in replicate_model.lower():
                 run_input = {
                     "prompt": user,
@@ -905,14 +906,6 @@ if ground_truth_json_str and ground_truth_json_str.strip():
 if last_results:
     st.divider()
     st.subheader("Results")
-    wall_s = st.session_state.get("llm_parsing_wall_clock_seconds")
-    if wall_s is not None:
-        max_model_s = max((r["time_seconds"] for r in last_results), default=0)
-        st.caption(
-            f"**Total wall-clock:** {wall_s:.2f} s (parallel run). "
-            f"≈ slowest model ({max_model_s:.2f} s) ⇒ calls ran in parallel. "
-            f"If sequential, total would be ~{sum(r['time_seconds'] for r in last_results):.1f} s."
-        )
     # Compute accuracy vs ground truth for each model
     rows = []
     for r in last_results:
@@ -925,22 +918,19 @@ if last_results:
             "Time (s)": f"{r['time_seconds']:.2f}",
             "Cost ($)": f"{r['cost_usd']:.4f}",
             "Accuracy (%)": f"{accuracy_pct:.1f}" if accuracy_pct is not None else "—",
-            "Input tok": r.get("input_tokens") or "—",
-            "Output tok": r.get("output_tokens") or "—",
             "JSON valid": "Yes" if r["json_valid"] else "No",
             "Schema valid": "Yes" if r["schema_valid"] else "No",
             "Structured out": "Yes" if r.get("structured_output_used") else "No",
             "Error": r.get("error") or "—",
         })
     st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.caption(
+        "**JSON valid:** output is parseable JSON. **Schema valid:** JSON matches the expected structure and types. "
+        "**Structured out:** model used API-enforced structured output (e.g. json_schema); No = prompt + manual parse."
+    )
     if ground_truth_parsed is None:
         st.caption("Provide valid ground truth JSON (right panel) to see Accuracy % vs that reference.")
-    valid = [r for r in last_results if r["schema_valid"]]
-    if valid:
-        best = min(valid, key=lambda x: (-x.get("accuracy_pct") or 0, x["cost_usd"], x["time_seconds"]))
-        acc = f", accuracy {best.get('accuracy_pct', 0):.1f}%" if best.get("accuracy_pct") is not None else ""
-        st.success(f"**Best schema-compliant:** {best['label']} (cost ${best['cost_usd']:.4f}, {best['time_seconds']:.2f}s{acc}).")
-    else:
+    if not any(r["schema_valid"] for r in last_results):
         st.warning("No model returned schema-valid JSON for this input. Check errors above.")
 
     # View parsed JSON from a chosen model

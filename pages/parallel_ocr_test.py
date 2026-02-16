@@ -143,18 +143,37 @@ if not replicate_key:
 
 if mistral_key and replicate_key:
     metadata = ocr.load_db_metadata()
-    # Build list of CVs that have PDF + ground truth
+    # Build list of CVs that have PDF + ground truth; track skipped for explanation
     cv_tasks = []
+    skipped = []  # (filename, reason)
     for row in metadata:
+        filename = row.get("filename", "")
+        base, ext = os.path.splitext(filename)
+        base = base.strip()
+        txt_path = os.path.join(ocr.PARSING_TXT_DIR, f"{base}.txt")
+        doc_path = os.path.join(ocr.CV_DIR, filename)
+        if not (os.path.isfile(txt_path) and os.path.getsize(txt_path) > 0):
+            skipped.append((filename, "no ground truth (missing or empty parsed/cvXXX.txt)"))
+            continue
+        if not os.path.isfile(doc_path):
+            skipped.append((filename, "document missing in ground_truth_database/cv/"))
+            continue
         pdf_bytes, api_filename, ground_truth = ocr.get_cv_pdf_and_ground_truth(row)
-        if pdf_bytes is not None and ground_truth:
-            cv_tasks.append({
-                "metadata_row": row,
-                "pdf_bytes": pdf_bytes,
-                "api_filename": api_filename,
-                "ground_truth": ground_truth,
-                "cv_filename": row.get("filename", ""),
-            })
+        if pdf_bytes is None or not ground_truth:
+            skipped.append((filename, "document could not be read or converted to PDF"))
+            continue
+        cv_tasks.append({
+            "metadata_row": row,
+            "pdf_bytes": pdf_bytes,
+            "api_filename": api_filename,
+            "ground_truth": ground_truth,
+            "cv_filename": filename,
+        })
+
+    if skipped:
+        with st.expander(f"Why not all? ({len(skipped)} skipped)"):
+            for fn, reason in skipped:
+                st.markdown(f"- **{fn}**: {reason}")
 
     if not cv_tasks:
         st.warning("No CVs found with both a valid document (PDF/DOCX/PNG/JPG) and ground truth (e.g. `ground_truth_database/parsed/cv001.txt`). "
