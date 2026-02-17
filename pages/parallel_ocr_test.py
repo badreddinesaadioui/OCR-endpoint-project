@@ -247,14 +247,19 @@ if mistral_key and replicate_key:
                 faster = MODEL_MISTRAL if m_time < r_time else MODEL_REPLICATE
                 cheaper = MODEL_MISTRAL if m_cost < r_cost else MODEL_REPLICATE
 
-                st.markdown("**Verdict**")
-                st.write(
-                    f"- **CER (lower is better):** {better_cer} (Mistral: {m_cer:.1f}%, Replicate: {r_cer:.1f}%)  \n"
-                    f"- **WER (lower is better):** {better_wer} (Mistral: {m_wer:.1f}%, Replicate: {r_wer:.1f}%)  \n"
-                    f"- **Layout accuracy (higher is better):** {better_layout} (Mistral: {m_layout:.1f}%, Replicate: {r_layout:.1f}%)  \n"
-                    f"- **Faster:** {faster} (Mistral: {m_time:.2f}s avg, Replicate: {r_time:.2f}s avg)  \n"
-                    f"- **Cheaper:** {cheaper} (Mistral: ${m_cost:.4f} total, Replicate: ${r_cost:.4f} total)"
+                # Ensure scalars for verdict (avoid st.write iterating over strings)
+                m_cost_val = float(mistral_rows["cost_usd"].sum())
+                r_cost_val = float(rep_rows["cost_usd"].sum())
+
+                verdict_text = (
+                    f"- **CER (lower is better):** {better_cer} (Mistral: {m_cer:.1f}%, Replicate: {r_cer:.1f}%)\n"
+                    f"- **WER (lower is better):** {better_wer} (Mistral: {m_wer:.1f}%, Replicate: {r_wer:.1f}%)\n"
+                    f"- **Layout accuracy (higher is better):** {better_layout} (Mistral: {m_layout:.1f}%, Replicate: {r_layout:.1f}%)\n"
+                    f"- **Faster:** {faster} (Mistral: {m_time:.2f}s avg, Replicate: {r_time:.2f}s avg)\n"
+                    f"- **Cheaper:** {cheaper} (Mistral: ${m_cost_val:.4f} total, Replicate: ${r_cost_val:.4f} total)"
                 )
+                st.markdown("**Verdict**")
+                st.markdown(verdict_text)
                 wins_m = sum([m_cer < r_cer, m_wer < r_wer, m_layout > r_layout, m_time < r_time, m_cost < r_cost])
                 wins_r = 5 - wins_m
                 if wins_m > wins_r:
