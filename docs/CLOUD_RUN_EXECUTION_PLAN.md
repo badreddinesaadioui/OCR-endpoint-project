@@ -60,7 +60,7 @@ Exit criteria:
 ## Phase 5 - POC integration
 
 Use API from:
-1. `api_poc_app.py` (local Streamlit UI)
+1. `app test/` (Svelte UI: drag-drop CV → Parse CV → JSON)
 2. any frontend/backend app via HTTPS
 
 Deliverable:

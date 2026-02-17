@@ -17,8 +17,8 @@ Current selected stack (from benchmark exports):
 - `cv_api/`  
   FastAPI implementation of the CV parsing API.
 
-- `api_poc_app.py`  
-  Streamlit POC UI to test the API quickly (upload CV -> parsed JSON).
+- `app test/`  
+  Svelte app to test the API (upload CV → Parse CV → parsed JSON).
 
 - `docs/`  
   Functional, API, Swagger, and deployment documentation.
@@ -41,15 +41,15 @@ cd "c:\Users\asus\Desktop\forvis mazar\OCR-endpoint-project"
 Swagger:
 - `http://localhost:8080/docs`
 
-### 2) Local POC UI (calls API)
+### 2) App test (Svelte UI, calls API)
 
-```powershell
-cd "c:\Users\asus\Desktop\forvis mazar\OCR-endpoint-project"
-.\.venv\Scripts\streamlit run api_poc_app.py
+```bash
+cd "app test"
+npm install
+npm run dev
 ```
 
-POC UI:
-- `http://localhost:8501`
+App: `http://localhost:5173` (ensure the API is running on port 8080).
 
 ## API Endpoints
 
