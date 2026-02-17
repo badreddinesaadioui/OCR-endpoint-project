@@ -5,6 +5,12 @@ FastAPI app implementing the API contract in docs/API_CONTRACT_V1.md.
 from __future__ import annotations
 
 import os
+from pathlib import Path
+
+# Load .env from project root so you don't need export commands (optional; falls back to .streamlit/secrets.toml)
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -15,6 +21,7 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .pipeline import (
@@ -54,6 +61,20 @@ app = FastAPI(
     title="CV Parsing API",
     version="1.0.0",
     description="Async CV parsing API: Mistral OCR 3 + Claude 4.5 Haiku",
+)
+
+# Allow Svelte app (and other frontends) to call the API from another origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vite dev server (app test)
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 _job_lock = threading.Lock()

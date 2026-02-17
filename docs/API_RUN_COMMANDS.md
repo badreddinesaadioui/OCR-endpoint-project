@@ -66,22 +66,19 @@ docker run --rm -p 8080:8080 `
   cv-parsing-api:latest
 ```
 
-## 6) Local POC UI (Streamlit)
+## 6) App test (Svelte UI)
 
-Run:
+Run (from project root):
 
-```powershell
-.\.venv\Scripts\streamlit run api_poc_app.py
+```bash
+cd "app test"
+npm install
+npm run dev
 ```
 
-Open:
-- `http://localhost:8501`
+Open: `http://localhost:5173`
 
-This UI calls the API and lets you:
-- upload CV files
-- choose async or sync mode
-- poll job status
-- view/download parsed JSON
+This UI calls the API and lets you upload a CV (PDF), click Parse CV, and view/copy the parsed JSON. Ensure the API is running on port 8080.
 
 ## 7) Cloud Run deploy (automated script)
 
