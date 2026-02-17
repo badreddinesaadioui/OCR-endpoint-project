@@ -63,15 +63,21 @@ app = FastAPI(
     description="Async CV parsing API: Mistral OCR 3 + Claude 4.5 Haiku",
 )
 
-# Allow Svelte app (and other frontends) to call the API from another origin
+# CORS: allow frontends (poc on localhost, or set CORS_ORIGINS env for deployed API)
+_default_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+]
+_cors_origins_env = os.environ.get("CORS_ORIGINS", "").strip()
+if _cors_origins_env:
+    allow_origins = [o.strip() for o in _cors_origins_env.split(",") if o.strip()]
+else:
+    allow_origins = _default_origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Vite dev server (app test)
-        "http://localhost:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],

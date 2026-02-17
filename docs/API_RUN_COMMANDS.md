@@ -71,7 +71,7 @@ docker run --rm -p 8080:8080 `
 Run (from project root):
 
 ```bash
-cd "app test"
+cd poc
 npm install
 npm run dev
 ```

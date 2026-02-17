@@ -1,7 +1,10 @@
 <script>
   import { onDestroy } from 'svelte';
 
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  // In dev we use /api so Vite proxies to Cloud Run (avoids CORS). In build we use full URL from .env.
+  const API_BASE = import.meta.env.DEV
+    ? '/api'
+    : (import.meta.env.VITE_API_BASE_URL || 'https://cv-parsing-api-iftlfnhyta-ew.a.run.app');
   const API_TOKEN = import.meta.env.VITE_API_AUTH_TOKEN || '';
 
   let file = null;
@@ -94,6 +97,7 @@
         method: 'POST',
         headers,
         body: formData,
+        mode: 'cors',
       });
       const data = await res.json().catch(() => ({}));
 
@@ -101,7 +105,7 @@
 
       if (!res.ok) {
         status = 'error';
-        errorMessage = data?.error?.message || res.statusText || 'Request failed';
+        errorMessage = data?.error?.message || res.statusText || `Request failed (${res.status})`;
         return;
       }
       result = data;
@@ -109,7 +113,11 @@
     } catch (err) {
       stopLoadingTimer();
       status = 'error';
-      errorMessage = err.message || 'Network error. Is the API running at ' + API_BASE + '?';
+      const msg = err.message || 'Network error';
+      // "Failed to fetch" usually means CORS blocked, wrong URL, or Cloud Run not allowing public access
+      errorMessage = msg.includes('fetch') && API_BASE.includes('run.app')
+        ? msg + '. Check: 1) Cloud Run "Allow unauthenticated" 2) API CORS allows this origin'
+        : msg + ' — Is the API running at ' + API_BASE + '?';
     }
   }
 
