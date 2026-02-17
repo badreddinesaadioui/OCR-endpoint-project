@@ -16,6 +16,9 @@
 2. `API_RUN_COMMANDS.md`  
    Local run commands, Docker commands, and deployment shortcuts.
 
+3. `API_INTEGRATION_README.md`  
+   Framework-agnostic integration guide (auth, sync/async flows, examples in multiple languages).
+
 ## Cloud Deployment
 
 1. `CLOUD_RUN_DEPLOYMENT_GUIDE.md`  
