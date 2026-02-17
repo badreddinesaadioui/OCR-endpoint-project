@@ -9,3 +9,6 @@ replicate
 pandas
 plotly
 jsonschema
+fastapi
+uvicorn[standard]
+python-multipart
