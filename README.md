@@ -29,27 +29,17 @@ Current selected stack (from benchmark exports):
 - `ground_truth_database/`  
   CV dataset, parsed text, and benchmark databases.
 
-## Quick Start
+## How to run each app
 
-### 1) Local API
+From the project root (after `pip install -r requirements.txt` and `npm install` in `app test/` if needed):
 
-```powershell
-cd "c:\Users\asus\Desktop\forvis mazar\OCR-endpoint-project"
-.\.venv\Scripts\uvicorn cv_api.main:app --host 0.0.0.0 --port 8080 --reload
-```
+| App | Command | URL |
+|-----|--------|-----|
+| **API** (FastAPI) | `./api` or `./run_api.sh` | http://localhost:8080 — docs: http://localhost:8080/docs |
+| **App test** (Svelte) | `cd "app test" && npm run dev` | http://localhost:5173 (needs API on 8080) |
+| **Benchmark** (Streamlit) | `streamlit run app.py` | http://localhost:8501 |
 
-Swagger:
-- `http://localhost:8080/docs`
-
-### 2) App test (Svelte UI, calls API)
-
-```bash
-cd "app test"
-npm install
-npm run dev
-```
-
-App: `http://localhost:5173` (ensure the API is running on port 8080).
+Quick start: run `./api`, then in another terminal `cd "app test" && npm run dev` to try the API from the UI.
 
 ## API Endpoints
 
