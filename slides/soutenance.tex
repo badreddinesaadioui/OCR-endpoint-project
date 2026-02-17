@@ -1,0 +1,570 @@
+% !TEX program = pdflatex
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% ─────────────────────────────────────────────
+%  PACKAGES
+% ─────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% ─────────────────────────────────────────────
+%  THEME — standard Beamer
+% ─────────────────────────────────────────────
+\usetheme{Madrid}
+\usecolortheme{whale}
+\usefonttheme{professionalfonts}
+
+\definecolor{mainblue}{HTML}{1B2A4A}
+\definecolor{accentred}{HTML}{D4382C}
+
+\setbeamercolor{palette primary}{bg=mainblue, fg=white}
+\setbeamercolor{palette secondary}{bg=mainblue!80, fg=white}
+\setbeamercolor{palette tertiary}{bg=mainblue, fg=white}
+\setbeamercolor{palette quaternary}{bg=mainblue, fg=white}
+\setbeamercolor{structure}{fg=mainblue}
+\setbeamercolor{title}{fg=white, bg=mainblue}
+\setbeamercolor{frametitle}{fg=white, bg=mainblue}
+
+\setbeamertemplate{navigation symbols}{}
+
+% ─────────────────────────────────────────────
+%  TITLE PAGE DATA
+% ─────────────────────────────────────────────
+\title[Pipeline CV $\rightarrow$ JSON]{Pipeline d'extraction automatique\\CV $\rightarrow$ JSON structuré}
+\subtitle{OCR \& Parsing par modèles d'IA}
+\author[Groupe 10]{%
+  LIMI Zakaria \and NAHLI Ghita \and OUTZOULA Abderrazzak \\
+  SALEHI Abderrahmane \and SAADIOU Badreddine%
+}
+\institute[Forvis Mazars]{%
+  Projet Option --- Forvis Mazars\\[4pt]
+  \footnotesize Tuteur : \textbf{Adil Ahidar}
+}
+\date{Février 2026}
+
+\graphicspath{{images/}}
+
+% ═════════════════════════════════════════════
+\begin{document}
+
+% ─────────────────────────────────────────────
+%  SLIDE 1 — TITRE
+% ─────────────────────────────────────────────
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% ─────────────────────────────────────────────
+%  SLIDE 2 — AGENDA
+% ─────────────────────────────────────────────
+\begin{frame}{Agenda}
+  \tableofcontents
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Contexte et enjeux}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Contexte et enjeux}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Le besoin}
+        Forvis Mazars reçoit des \textbf{centaines de CV} via différents canaux :
+        \begin{itemize}
+          \item Formats hétérogènes (PDF, Word, images)
+          \item Langues multiples (\textbf{français, anglais, arabe})
+          \item Mises en page variées (colonnes, infographies, tableaux)
+        \end{itemize}
+      \end{block}
+      \vspace{0.3cm}
+      \begin{alertblock}{Le problème}
+        Le traitement \textbf{manuel} est lent, sujet aux erreurs et inexploitable pour la CVthèque.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{exampleblock}{Notre mission}
+        Construire un \textbf{pipeline automatique} :
+        \begin{enumerate}
+          \item Fichier CV (PDF / Word / image)
+          \item Pipeline (OCR + Parsing)
+          \item JSON structuré (nom, expériences, \ldots)
+        \end{enumerate}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Cheminement vers la solution cible}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Cheminement vers la solution cible}
+  \begin{block}{Les six phases du projet}
+    \begin{enumerate}
+      \item \textbf{Cadrage} --- Cahier des charges, constitution du corpus de test
+      \item \textbf{Benchmark} --- Évaluation OCR + LLM, multi-critères
+      \item \textbf{Décision} --- Sélection : Mistral OCR 3 + Claude 4.5 Haiku
+      \item \textbf{Développement} --- API FastAPI, application POC Svelte
+      \item \textbf{Déploiement} --- Google Cloud Run, Secret Manager
+      \item \textbf{Livraison} --- API + POC + Documentation, prêt pour l'ATS
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Outil de benchmark}
+        \small Application \textbf{Streamlit} développée pour tester et comparer les modèles OCR et LLM de manière automatique et reproductible.
+      \end{block}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \begin{block}{API de production}
+        \small \textbf{FastAPI} déployée sur \textbf{Cloud Run} : le client envoie un CV, reçoit un JSON. Modes synchrone et asynchrone.
+      \end{block}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Application POC}
+        \small Interface \textbf{Svelte} qui consomme l'API en production. Démontre la chaîne complète CV $\rightarrow$ JSON.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Corpus et démarche d'évaluation}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Notre corpus de test : la CVthèque}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{16 CV soigneusement sélectionnés}
+        \begin{itemize}
+          \item \textbf{Formats :} PDF, Word, PNG, JPG
+          \item \textbf{Langues :} FR, EN, AR
+          \item \textbf{Layouts :} mono-colonne, multi-colonnes, infographique
+          \item \textbf{Types :} numériques et scannés
+          \item \textbf{Éléments :} tableaux, icônes, RTL
+        \end{itemize}
+      \end{block}
+      \vspace{0.2cm}
+      {\small Chaque CV est accompagné d'un \textbf{texte de référence} (ground truth) pour mesurer la qualité d'extraction.}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{01-cvtheque-database.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Démarche d'évaluation}
+  \begin{block}{Les quatre étapes}
+    \begin{enumerate}
+      \item \textbf{Sélection des candidats} --- 5 moteurs OCR, 4 modèles de parsing
+      \item \textbf{Benchmark parallèle} --- Tous les CV, en parallèle, métriques automatiques
+      \item \textbf{Filtre de vitesse} --- OCR : $<$ 20\,s, Parsing : $<$ 15\,s
+      \item \textbf{Décision multi-critères} --- Borda / Condorcet sur les finalistes
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Critères de comparaison}
+        \begin{itemize}
+          \item \textbf{Précision} (CER, WER, layout)
+          \item \textbf{Validité} du JSON et du schéma
+          \item \textbf{Temps} de réponse
+          \item \textbf{Coût} par requête
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Pourquoi plusieurs critères ?}
+        Un seul chiffre ne suffit pas. Nous avons utilisé des \textbf{méthodes de vote} (Borda, Condorcet) pour classer les modèles de façon \textbf{objective et pondérée}.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Benchmark OCR}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Benchmark OCR : les candidats}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \renewcommand{\arraystretch}{1.35}
+      \centering
+      {\small
+      \begin{tabular}{>{\bfseries}l l}
+        \toprule
+        Modèle & Fournisseur \\
+        \midrule
+        Mistral OCR 3 & Mistral AI \\
+        GPT-4o vision & OpenAI \\
+        text-extract-ocr & Replicate \\
+        Deepseek OCR & Replicate \\
+        Marker & Replicate \\
+        \bottomrule
+      \end{tabular}}
+
+      \vspace{0.4cm}
+      \begin{alertblock}{Contrainte opérationnelle}
+        Tout modèle dépassant \textbf{20 secondes} par CV est \textbf{éliminé} (usage fluide requis).
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{02-ocr-benchmark-ui.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats OCR : les deux finalistes}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      Après filtrage par vitesse, \textbf{deux modèles} passent le cap :
+      \vspace{0.3cm}
+
+      \renewcommand{\arraystretch}{1.3}
+      {\small
+      \begin{tabular}{l r r r r}
+        \toprule
+         & \textbf{CER} & \textbf{WER} & \textbf{Layout} & \textbf{Temps} \\
+        \midrule
+        \textbf{Mistral OCR 3}       & 34,6\% & 36,8\% & 65,6\% & 5,2\,s \\
+        \textbf{text-extract-ocr}    & 49,6\% & 56,9\% & 62,4\% & 3,8\,s \\
+        \bottomrule
+      \end{tabular}}
+
+      \vspace{0.4cm}
+      \begin{exampleblock}{Verdict}
+        \textbf{Mistral OCR 3} gagne sur \textbf{3 critères sur 5} (précision, layout, CER/WER). Replicate est plus rapide et moins cher, mais moins précis.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{08-parallel-ocr-results-verdict.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats OCR : analyse détaillée}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{16-ocr-charts-cer-layout-language.png}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{17-ocr-charts-time-cost.png}
+      \vspace{0.3cm}
+      \begin{exampleblock}{Conclusion OCR}
+        \begin{itemize}
+          \item \textbf{Mistral OCR 3} domine en précision sur tous les layouts et toutes les langues.
+          \item Coût légèrement supérieur, mais qualité justifie l'investissement.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Benchmark Parsing LLM}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Benchmark parsing : les candidats}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \renewcommand{\arraystretch}{1.35}
+      \centering
+      {\small
+      \begin{tabular}{>{\bfseries}l l}
+        \toprule
+        Modèle & Fournisseur \\
+        \midrule
+        GPT 4.1 nano & OpenAI \\
+        GPT 5 mini & OpenAI \\
+        Gemini 2.5 Flash & Replicate \\
+        Claude 4.5 Haiku & Replicate \\
+        \bottomrule
+      \end{tabular}}
+
+      \vspace{0.4cm}
+      {\small L'entrée est le texte brut issu de l'OCR ; la sortie attendue est un \textbf{JSON structuré} conforme au schéma (nom, expériences, formations, compétences, langues\ldots).}
+
+      \vspace{0.3cm}
+      \begin{alertblock}{Exclusion}
+        \textbf{GPT 5 mini} exclu : temps moyen $>$ 15\,s.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{11-llm-parsing-benchmark-ui.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats parsing : les trois finalistes}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \renewcommand{\arraystretch}{1.3}
+      {\small
+      \begin{tabular}{l r r r}
+        \toprule
+         & \textbf{Précision} & \textbf{Temps} & \textbf{Coût} \\
+        \midrule
+        \textbf{Claude 4.5 Haiku}  & 79,1\% & 8,1\,s  & 0,13\,\$ \\
+        Gemini 2.5 Flash            & 72,4\% & 11,0\,s & 0,05\,\$ \\
+        Gemini 4o nano              & 72,9\% & 14,1\,s & 0,04\,\$ \\
+        \bottomrule
+      \end{tabular}}
+
+      \vspace{0.3cm}
+      {\small Tous les modèles produisent un JSON \textbf{100\% valide} et conforme au schéma.}
+
+      \vspace{0.3cm}
+      \begin{exampleblock}{Verdict}
+        \textbf{Claude 4.5 Haiku} : meilleure précision (79\%), plus rapide (8\,s), JSON et schéma toujours valides.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{12-parallel-llm-parsing-results-verdict.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats parsing : analyse détaillée}
+  \centering
+  \includegraphics[width=0.85\textwidth]{13-llm-parsing-charts-accuracy-time.png}
+
+  \vspace{0.4cm}
+  \begin{exampleblock}{}
+    \centering
+    Claude 4.5 Haiku est \textbf{le plus précis sur tous les types de layout} et le \textbf{plus rapide} parmi les finalistes, quelle que soit la langue.
+  \end{exampleblock}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Recommandations et budgétisation}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Nos recommandations}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{OCR recommandé : Mistral OCR 3}
+        \renewcommand{\arraystretch}{1.2}
+        {\small
+        \begin{tabular}{rl}
+          CER moyen       & \textbf{34,6\%} \\
+          WER moyen       & \textbf{36,8\%} \\
+          Layout accuracy & \textbf{65,6\%} \\
+          Temps moyen     & 5,2\,s \\
+          Coût total      & 0,16\,\$ \\
+        \end{tabular}}
+      \end{block}
+
+      \vspace{0.3cm}
+
+      \begin{block}{Parsing recommandé : Claude 4.5 Haiku}
+        \renewcommand{\arraystretch}{1.2}
+        {\small
+        \begin{tabular}{rl}
+          Précision moyenne & \textbf{79,1\%} \\
+          JSON valide       & \textbf{100\%} \\
+          Schéma valide     & \textbf{100\%} \\
+          Temps moyen       & 8,1\,s \\
+          Coût total        & 0,13\,\$ \\
+        \end{tabular}}
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{15-results-summary-ocr-llm.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{API, POC et démonstration}
+% ═════════════════════════════════════════════
+
+\begin{frame}{L'API : de la théorie à la production}
+  \begin{block}{Architecture du pipeline}
+    \centering
+    \begin{tikzpicture}[
+        box/.style={draw=mainblue, rounded corners=3pt, fill=white,
+                    minimum height=1cm, text width=2.4cm, align=center, font=\footnotesize},
+        >=Stealth, node distance=1cm
+      ]
+      \node[box] (client) at (0,0) {\textbf{Client}\\{\tiny app, recruteur, ATS}};
+      \node[box, fill=mainblue!10] (api) at (4,0) {\textbf{API FastAPI}\\{\tiny Google Cloud Run}};
+      \node[box] (ocr) at (8,0.7) {\textbf{Mistral OCR 3}\\{\tiny extraction texte}};
+      \node[box] (llm) at (8,-0.7) {\textbf{Claude 4.5 Haiku}\\{\tiny parsing JSON}};
+      \node[box, fill=green!5, draw=green!50!black] (json) at (12,0) {\textbf{JSON}\\{\tiny structuré, validé}};
+
+      \draw[->, thick] (client) -- node[above, font=\tiny]{CV} (api);
+      \draw[->, thick] (api) -- (ocr);
+      \draw[->, thick] (api) -- (llm);
+      \draw[->, thick] (ocr.east) -- ++(0.5,0) |- (json);
+      \draw[->, thick] (llm.east) -- ++(0.5,0) |- (json);
+      \draw[->, thick, dashed] (json.south) -- ++(0,-0.8) -| node[below, near start, font=\tiny]{réponse} (client.south);
+    \end{tikzpicture}
+  \end{block}
+
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Sécurité}
+        \small Clés dans \textbf{Secret Manager}\\
+        Authentification par token\\
+        Communications HTTPS
+      \end{block}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Scalabilité}
+        \small Cloud Run : mise à l'échelle \textbf{automatique}\\
+        Scale-to-zero (coût maîtrisé)
+      \end{block}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Endpoints}
+        \small \texttt{POST /v1/parse-cv} (sync)\\
+        \texttt{POST /v1/jobs} (async)\\
+        \texttt{GET /health}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Application POC : démonstration bout en bout}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Interface utilisateur}
+        \begin{itemize}
+          \item Application web \textbf{Svelte}
+          \item Dépôt du CV par glisser-déposer
+          \item Bouton \textbf{« Parse CV »}
+          \item Affichage du JSON structuré
+          \item Connectée à l'API Cloud Run
+        \end{itemize}
+      \end{block}
+      \vspace{0.3cm}
+      \begin{exampleblock}{Preuve de valeur}
+        \small La chaîne complète fonctionne :\\
+        \textbf{CV} $\rightarrow$ \textbf{API} $\rightarrow$ \textbf{OCR} $\rightarrow$ \textbf{Parsing} $\rightarrow$ \textbf{JSON}\\[3pt]
+        Base pour une future interface recruteur intégrée à l'ATS.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{18-cv-parser-svelte-app-ui.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Documentation livrée}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Conformité au cahier des charges}
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  {\small
+  \begin{tabular}{>{\raggedright}p{5.5cm} c p{5cm}}
+    \toprule
+    \textbf{Exigence du CdC} & \textbf{Statut} & \textbf{Résultat} \\
+    \midrule
+    OCR multilingue (FR, EN, AR) & \checkmark & 3 langues testées sur 16 CV \\
+    Temps moyen $\leq$ 10\,s par CV & \checkmark & OCR : 5,2\,s \\
+    Segmentation multi-colonnes & \checkmark & Testé : mono, multi, infographique \\
+    JSON structuré conforme au schéma & \checkmark & 100\% JSON et schéma valides \\
+    API REST + supervision & \checkmark & FastAPI, sync + async, \texttt{/health} \\
+    Déploiement cloud & \checkmark & Google Cloud Run, HTTPS, Secret Manager \\
+    Documentation technique & \checkmark & Contrat API, guides, Swagger \\
+    \bottomrule
+  \end{tabular}}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Conclusion et perspectives}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Conclusion et perspectives}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Ce qui a été réalisé}
+        \begin{enumerate}
+          \item Corpus de \textbf{16 CV} représentatif
+          \item Benchmark \textbf{5 moteurs OCR}, \textbf{4 modèles LLM}
+          \item Méthode de décision \textbf{multi-critères}
+          \item Choix : \textbf{Mistral OCR 3} + \textbf{Claude 4.5 Haiku}
+          \item \textbf{API} déployée sur Cloud Run
+          \item \textbf{POC} Svelte fonctionnel
+          \item Documentation complète
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Perspectives}
+        \begin{itemize}
+          \item Intégration avec l'\textbf{ATS Forvis Mazars}
+          \item Extension à d'autres formats (CV vidéo, LinkedIn)
+          \item Enrichissement du corpus (plus de CV, plus de langues)
+          \item \textbf{Fine-tuning} des prompts selon retours métier
+          \item Monitoring et alertes en production
+          \item Interface recruteur intégrée
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ─────────────────────────────────────────────
+%  SLIDE — MERCI
+% ─────────────────────────────────────────────
+\begin{frame}
+  \centering
+  \vfill
+  {\Huge\bfseries Merci}\\[12pt]
+  {\large pour votre attention}\\[20pt]
+  {\normalsize Nous remercions notre tuteur \textbf{Adil Ahidar}\\
+  ainsi que l'équipe \textbf{Forvis Mazars} pour leur accompagnement.}\\[20pt]
+  {\Large\bfseries Questions\,?}
+  \vfill
+\end{frame}
+
+% ═════════════════════════════════════════════
+%  ANNEXES
+% ═════════════════════════════════════════════
+\appendix
+
+\begin{frame}
+  \centering
+  \vfill
+  {\Huge\bfseries Annexes}\\[8pt]
+  {\large Slides de secours pour questions détaillées}
+  \vfill
+\end{frame}
+
+\begin{frame}{Annexe : détail des runs OCR}
+  \centering
+  \includegraphics[width=0.85\textwidth]{09-ocr-charts-cer-time.png}
+\end{frame}
+
+\begin{frame}{Annexe : détail des runs LLM parsing}
+  \centering
+  \includegraphics[width=0.88\textwidth]{14-llm-parsing-all-runs-table.png}
+\end{frame}
+
+\end{document}

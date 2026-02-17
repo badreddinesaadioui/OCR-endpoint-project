@@ -127,6 +127,18 @@
     navigator.clipboard.writeText(text);
   }
 
+  function downloadJson() {
+    if (!result?.result) return;
+    const text = JSON.stringify(result.result, null, 2);
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (file?.name?.replace(/\.pdf$/i, '') || 'cv') + '-parsed.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function resultJson() {
     if (!result?.result) return '';
     return JSON.stringify(result.result, null, 2);
@@ -142,9 +154,13 @@
 </svelte:head>
 
 <header class="header">
-  <div class="logo">
-    <img src="/logo.png" alt="forvis mazars" on:error={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling?.classList.add('show'); }} />
-    <span class="logo-text"><span class="forvis">forvis</span><span class="mazars">mazars</span></span>
+  <div class="logos">
+    <img src="/centrale-casablanca.png" alt="Centrale Casablanca" class="logo-centrale" on:error={(e) => { e.target.style.display = 'none'; }} />
+    <span class="logo-sep" aria-hidden="true">×</span>
+    <div class="logo">
+      <img src="/logo.png" alt="forvis mazars" on:error={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling?.classList.add('show'); }} />
+      <span class="logo-text"><span class="forvis">forvis</span><span class="mazars">mazars</span></span>
+    </div>
   </div>
   <span class="header-title">CV Parser</span>
 </header>
@@ -232,10 +248,16 @@
       <div class="results-success">
         <div class="results-header">
           <span class="results-label">Parsed Result <span class="results-time">(in {elapsedSeconds.toFixed(1)}s)</span></span>
-          <button type="button" class="btn-copy" on:click={copyJson}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copy JSON
-      </button>
+          <div class="results-actions">
+            <button type="button" class="btn-copy" on:click={downloadJson}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download JSON
+            </button>
+            <button type="button" class="btn-copy" on:click={copyJson}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy JSON
+            </button>
+          </div>
         </div>
         <pre class="results-json">{resultJson()}</pre>
       </div>
@@ -251,6 +273,23 @@
     padding: 1rem 1.5rem;
     background: var(--card);
     border-bottom: 1px solid var(--border);
+  }
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .logo-centrale {
+    height:60px; /* 200% bigger (36px × 3) */
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .logo-sep {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1;
   }
   .logo img {
     height: 36px;
@@ -472,6 +511,13 @@
     justify-content: space-between;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .results-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   .results-label {
     font-weight: 600;

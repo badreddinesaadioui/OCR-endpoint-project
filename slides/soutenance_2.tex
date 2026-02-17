@@ -1,0 +1,434 @@
+% !TEX program = pdflatex
+% Soutenance 2 — Justification stratégique et technique
+% Module ATS intelligent — Parsing CV | Forvis Mazars
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{whale}
+\usefonttheme{professionalfonts}
+
+\definecolor{mainblue}{HTML}{1B2A4A}
+\definecolor{accentred}{HTML}{D4382C}
+
+\setbeamercolor{palette primary}{bg=mainblue, fg=white}
+\setbeamercolor{palette secondary}{bg=mainblue!80, fg=white}
+\setbeamercolor{structure}{fg=mainblue}
+\setbeamercolor{frametitle}{fg=white, bg=mainblue}
+\setbeamertemplate{navigation symbols}{}
+
+\title[ATS Parsing CV]{Module ATS intelligent : parsing de CV}
+\subtitle{Justification stratégique et technique des choix d'architecture}
+\author[Groupe 10]{Limi, Nahli, Outzoula, Salehi, Saadioui}
+\institute[Forvis Mazars]{Projet Option — Data Science \& Digitalisation}
+\date{Février 2026}
+
+\graphicspath{{images/}}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Agenda}
+  \tableofcontents
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Contexte du projet}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Contexte du projet}
+  \begin{block}{Objectif}
+    Développer un module de parsing CV \textbf{prêt pour la production}, intégrable dans un ATS Forvis Mazars.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Contraintes métier}
+        \begin{itemize}
+          \item CV multi-colonnes, infographiques, tableaux
+          \item Multilingue : FR, EN, AR
+          \item Formats : PDF natifs, PDF scannés, DOCX, images
+          \item Sortie : JSON normalisé
+          \item Solution industrialisable
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Architecture retenue}
+        \centering
+        \textbf{OCR} $\rightarrow$ \textbf{LLM} $\rightarrow$ \textbf{JSON Schema}\\[6pt]
+        \small Mistral OCR + Claude 4.5 Haiku
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 1 — Abandon des parsers natifs}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 1 — Approches testées (parsers natifs)}
+  \begin{block}{Technologies évaluées}
+    \begin{itemize}
+      \item Extraction texte PDF : PyMuPDF (flux texte natif)
+      \item Parsing DOCX natif (XML, paragraphes, tableaux)
+      \item Algorithmes heuristiques multi-colonnes (régions, ordre de lecture)
+      \item Reconstruction de layout par règles (colonnes, blocs)
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Problème central}
+    Les CV multi-colonnes ne peuvent pas être correctement reconstruits avec des approches \textbf{déterministes} seules. Instabilité et mauvaise généralisation sur designs variés (Canva, infographies).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Partie 1 — Justification mathématique}
+  \begin{block}{Complexité et limites théoriques}
+    \begin{itemize}
+      \item \textbf{Ordre de lecture} : déterminer l'ordre optimal de lecture des blocs sur une page 2D équivaut à un problème d'ordonnancement de blocs $\rightarrow$ \textbf{NP-hard} dans le cas général.
+      \item \textbf{Segmentation 2D $\rightarrow$ 1D} : toute projection (colonnes $\rightarrow$ flux texte) induit une \textbf{perte d'information} structurelle.
+      \item \textbf{Colonnes asymétriques} : ambiguïté structurelle ; plusieurs ordres de lecture plausibles.
+      \item \textbf{Regroupement naïf} : complexité en $O(n^2)$ avec le nombre de blocs ; explosion des cas à gérer.
+    \end{itemize}
+  \end{block}
+  \vspace{0.2cm}
+  \textbf{Recommandation visuelle :} schéma « Blocs 2D $\rightarrow$ flux 1D » avec flèches illustrant la perte d'information.
+\end{frame}
+
+\begin{frame}{Partie 1 — Conclusion : abandon des parsers natifs}
+  \begin{block}{Échecs constatés}
+    \begin{itemize}
+      \item \textbf{Stabilité} : résultats très variables selon le template (Canva, Word, LaTeX).
+      \item \textbf{Généralisation} : règles et heuristiques ne couvrent pas l'espace des designs réels.
+      \item \textbf{Robustesse production} : maintenance coûteuse, régressions fréquentes sur nouveaux formats.
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Décision}
+    Approche \textbf{abandonnée}. Passage à une chaîne \textbf{OCR $\rightarrow$ LLM} pour s'appuyer sur la vision et le langage plutôt que sur la structure low-level des fichiers.
+  \end{exampleblock}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 2 — OCR comme solution centrale}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 2 — Candidats OCR et critères}
+  \begin{block}{Moteurs OCR testés}
+    Mistral OCR, DeepSeek OCR, OpenAI Vision OCR, Marker OCR (et variantes Replicate).
+  \end{block}
+  \begin{block}{Métriques d'évaluation}
+    \begin{itemize}
+      \item \textbf{WER} (Word Error Rate) $\rightarrow$ robustesse linguistique
+      \item \textbf{CER} (Character Error Rate) $\rightarrow$ stabilité multi-langue
+      \item \textbf{Accuracy globale} (layout, fidélité au document)
+      \item \textbf{Temps d'exécution} $\rightarrow$ compatibilité SLA
+      \item \textbf{Coût par document} $\rightarrow$ scalabilité
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} tableau comparatif WER / CER / temps / coût (barres ou heatmap).
+\end{frame}
+
+\begin{frame}{Partie 2 — Décision multicritères et choix OCR}
+  \begin{block}{Pourquoi une décision multicritère ?}
+    \begin{itemize}
+      \item Pas d'optimum unidimensionnel : compromis \textbf{accuracy / coût / vitesse}.
+      \item Méthodes utilisées : \textbf{Borda} (classement pondéré), \textbf{Condorcet} (comparaisons par paires).
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Résultat}
+    \textbf{Mistral OCR} retenu : meilleur compromis sur WER, CER, accuracy layout, avec temps et coût acceptables pour un usage industrialisé.
+  \end{exampleblock}
+  \textbf{Recommandation visuelle :} matrice de scores Borda/Condorcet ou radar (accuracy, coût, temps).
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 3 — Structuration JSON : pourquoi LLM}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 3 — Alternatives au LLM pour le JSON}
+  \begin{block}{Options étudiées}
+    LayoutLM, Donut, GNN ; rule-based NLP ; regex + heuristiques ; fine-tuning BERT multilingue ; CRF ; NER classique.
+  \end{block}
+  \begin{block}{Pourquoi non retenues}
+    \begin{itemize}
+      \item Besoin d'un \textbf{dataset annoté important} $O(N)$
+      \item Coût de fine-tuning et complexité d'entraînement $O(n \cdot d)$
+      \item Maintenance lourde ; généralisation limitée ; instabilité cross-layout
+      \item Problème multi-langue non trivial ; pipeline d'inférence complexe
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} tableau « Approche / Dataset requis / Coût / Maintenance ».
+\end{frame}
+
+\begin{frame}{Partie 3 — Justification du choix LLM}
+  \begin{block}{Avantages du parsing par LLM}
+    \begin{itemize}
+      \item \textbf{Zero-shot / few-shot} : pas de dataset annoté dédié
+      \item \textbf{Généralisation} forte sur layouts et langues
+      \item Complexité \textbf{constante} côté implémentation (prompt + schéma)
+      \item Maintenance réduite ; \textbf{time-to-market} rapide
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Arbitrage}
+    Fine-tuning nécessite $O(N)$ annotations et risque d'overfitting sur des templates ; le LLM permet de passer en production sans phase d'entraînement dédiée.
+  \end{exampleblock}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 4 — Benchmark LLM}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 4 — Benchmark LLM : candidats et métriques}
+  \begin{block}{Modèles testés}
+    GPT-4.1 Nano, GPT-5 Mini, Gemini 2.5 Flash, Claude 4.5 Haiku.
+  \end{block}
+  \begin{block}{Critères d'évaluation}
+    \begin{itemize}
+      \item \textbf{Accuracy} d'extraction JSON (conformité au ground truth)
+      \item \textbf{Coût} par 1000 CV
+      \item \textbf{Latence} moyenne par CV
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} graphique en barres (accuracy vs coût) ou tableau synthétique. Mise en évidence de l'arbitrage performance / coût.
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 5 — Décision finale LLM}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 5 — Tableau comparatif synthétique}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \small
+    \begin{tabular}{lcccc}
+      \toprule
+      \textbf{Modèle} & \textbf{Accuracy} & \textbf{Latence} & \textbf{Coût/doc} & \textbf{Multilingue} \\
+      \midrule
+      GPT-4.1 Nano    & (hors top 3) & -- & -- & oui \\
+      GPT-5 Mini      & -- & $>$15\,s (exclu) & -- & oui \\
+      Gemini 2.5 Flash & 72,4\% & 11,0\,s & 0,05\,\$ & oui \\
+      \textbf{Claude 4.5 Haiku} & \textbf{79,1\%} & \textbf{8,1\,s} & 0,13\,\$ & oui \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{0.3cm}
+  \begin{exampleblock}{}
+    Claude 4.5 Haiku : meilleure accuracy, latence la plus faible parmi les finalistes, JSON et schéma 100\% valides.
+  \end{exampleblock}
+  \textbf{Recommandation visuelle :} réutiliser ce tableau dans PowerPoint avec couleurs (vert = retenu).
+\end{frame}
+
+\begin{frame}{Partie 5 — Justification stratégique de la décision}
+  \begin{block}{Pourquoi Claude 4.5 Haiku}
+    \begin{itemize}
+      \item \textbf{Accuracy} la plus stable sur CV multi-layout (mono, multi-colonnes, infographique)
+      \item \textbf{Coût maîtrisé} par document ; prévisible pour la budgétisation
+      \item \textbf{Latence acceptable} ($\sim$8\,s) pour un usage fluide (SLA compatible)
+      \item \textbf{Robustesse multilingue} (FR, EN, AR) sans configuration spécifique
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Décision}
+    Choix aligné avec les contraintes production : qualité, coût et délai compatibles avec une intégration ATS.
+  \end{exampleblock}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 6 — Architecture API industrialisée}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 6 — Vue d'ensemble et UML simplifié}
+  \begin{block}{Composants réalisés}
+    API Python (FastAPI), intégration Mistral OCR, intégration Claude Haiku, validation JSON Schema conforme aux besoins Forvis Mazars, déploiement Google Cloud.
+  \end{block}
+  \begin{block}{Description du diagramme UML à insérer}
+    \textbf{Diagramme de composants simplifié :}
+    \begin{itemize}
+      \item Composant \texttt{API} (orchestration) ; composants \texttt{OCR}, \texttt{LLM}, \texttt{Validator}.
+      \item Interfaces : entrée (fichier CV), sortie (JSON). Dépendances : Mistral API, Replicate/Claude API.
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} bloc « Client », bloc « API », blocs « OCR » et « LLM », bloc « JSON » ; flèches « utilise ».
+\end{frame}
+
+\begin{frame}{Partie 6 — Architecture requête classique}
+  \begin{block}{Description du flux à illustrer}
+    \textbf{Requête classique :}\\[4pt]
+    \textbf{Client} $\rightarrow$ \textbf{API} (HTTPS) $\rightarrow$ \textbf{Routing} (type de fichier) $\rightarrow$ \textbf{OCR} (si nécessaire) $\rightarrow$ \textbf{LLM} (parsing) $\rightarrow$ \textbf{Validation JSON Schema} $\rightarrow$ \textbf{Response} (JSON structuré).
+  \end{block}
+  \textbf{Recommandation visuelle :} schéma horizontal : Client $\rightarrow$ API $\rightarrow$ OCR $\rightarrow$ LLM $\rightarrow$ JSON $\rightarrow$ Response. Indiquer « Input : PDF, DOCX, PNG, JPG » et « Output : JSON prêt CVthèque ».
+\end{frame}
+
+\begin{frame}{Partie 6 — Diagramme de séquence}
+  \begin{block}{Description du diagramme de séquence}
+    \begin{itemize}
+      \item \textbf{Acteur :} Utilisateur / Client.
+      \item \textbf{Upload} : envoi du fichier CV vers l'API.
+      \item \textbf{Processing} : API $\rightarrow$ OCR (si image/PDF scanné) $\rightarrow$ LLM (texte $\rightarrow$ JSON) $\rightarrow$ validation.
+      \item \textbf{Response} : retour du JSON structuré au client.
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} trois « lignes de vie » (Client, API, Services OCR/LLM) ; messages : Upload, Process, Return JSON.
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 7 — Déploiement Google Cloud}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 7 — Infrastructure et déploiement}
+  \begin{block}{Mise en œuvre}
+    \begin{itemize}
+      \item API \textbf{containerisée} (Docker) ; déploiement sur \textbf{Cloud Run} ou Compute Engine
+      \item Gestion des \textbf{secrets} (clés API Mistral, Replicate) via \textbf{Secret Manager}
+      \item \textbf{Scalabilité automatique} (scale-to-zero possible) ; logging \& monitoring (Cloud Logging, métriques)
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} schéma architecture cloud (Client $\rightarrow$ Load Balancer / API Gateway $\rightarrow$ Cloud Run $\rightarrow$ Secret Manager ; flèches vers APIs externes OCR/LLM).
+\end{frame}
+
+\begin{frame}{Partie 7 — Justification choix Google Cloud}
+  \begin{block}{Raisons du choix}
+    \begin{itemize}
+      \item \textbf{Cloud Run} : déploiement conteneur simple, scaling automatique, facturation à l'usage
+      \item \textbf{Secret Manager} : clés API sécurisées, pas de variables en clair dans le code
+      \item Intégration \textbf{logging / monitoring} native ; conformité et contrôle des coûts
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 8 — Plateforme Forvis Mazars}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 8 — Architecture Full Stack}
+  \begin{block}{Stack technique}
+    \begin{itemize}
+      \item \textbf{Frontend} : Svelte (framework JavaScript), HTML/CSS
+      \item \textbf{Communication} : appels HTTPS vers l'API déployée sur Google Cloud
+      \item \textbf{Backend} : API FastAPI (OCR + LLM + validation)
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} schéma en trois couches : « Interface Svelte » $\leftrightarrow$ « API Cloud » $\leftrightarrow$ « OCR + LLM ».
+\end{frame}
+
+\begin{frame}{Partie 8 — Flux utilisateur}
+  \begin{block}{Parcours utilisateur}
+    \begin{enumerate}
+      \item Utilisateur \textbf{upload} le CV (glisser-déposer ou sélection)
+      \item Requête vers l'API Google Cloud
+      \item Retour \textbf{JSON structuré}
+      \item Affichage formaté à l'écran
+      \item Intégration future vers \textbf{CVthèque}
+    \end{enumerate}
+  \end{block}
+  \textbf{Recommandation visuelle :} chaîne d'étapes avec icônes : Upload $\rightarrow$ API $\rightarrow$ JSON $\rightarrow$ Affichage $\rightarrow$ CVthèque (flèche en pointillés pour « futur »).
+\end{frame}
+
+\begin{frame}{Partie 8 — Vision CVthèque cible}
+  \begin{block}{Cible d'intégration}
+    \begin{itemize}
+      \item Le JSON structuré est \textbf{prêt pour alimentation} d'une base CV (CVthèque)
+      \item Champs normalisés : identité, expériences, formations, compétences, langues
+      \item Interface POC actuelle démontre la chaîne ; l'ATS pourra consommer la même API
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} schéma « POC actuel $\rightarrow$ API $\rightarrow$ CVthèque Forvis Mazars » (bloc cible mis en avant).
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 9 — Modélisation et vision système}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 9 — Composants et responsabilités}
+  \begin{block}{Séparation des couches}
+    \begin{itemize}
+      \item \textbf{Front} : interface utilisateur (Svelte), upload, affichage JSON
+      \item \textbf{Back} : API (routing, orchestration, validation)
+      \item \textbf{AI layer} : OCR (Mistral), LLM (Claude Haiku) ; données = texte brut, JSON structuré
+    \end{itemize}
+  \end{block}
+  \begin{block}{Évolutivité}
+    Remplacement possible d'un moteur OCR ou LLM sans changer le contrat API ; validation JSON Schema centralisée.
+  \end{block}
+  \textbf{Recommandation visuelle :} diagramme composants avec Front / Back / AI layer et interfaces (REST, schéma JSON).
+\end{frame}
+
+\begin{frame}{Partie 9 — Diagramme logique}
+  \begin{block}{Éléments à représenter}
+    \begin{itemize}
+      \item Données : CV (binaire), Texte OCR, JSON validé
+      \item Interfaces : REST (POST /parse-cv), format de réponse (JSON)
+      \item Flux logique : Fichier $\rightarrow$ Détection type $\rightarrow$ OCR si besoin $\rightarrow$ LLM $\rightarrow$ Validation $\rightarrow$ Réponse
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} diagramme logique (data flow) avec blocs « Données », « Traitement », « Sortie ».
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Partie 10 — Budget et coût de la solution}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Partie 10 — Hypothèses et coûts estimés}
+  \begin{block}{Postes de coût}
+    \begin{itemize}
+      \item \textbf{Google Cloud} : Cloud Run / Compute (fonction du trafic ; scale-to-zero limite les coûts inactifs)
+      \item \textbf{Mistral OCR} : coût par 1000 CV (à renseigner selon grille tarifaire)
+      \item \textbf{Claude Haiku} : coût par 1000 CV (ordre de grandeur : $\sim$0,13\,\$ par CV $\Rightarrow$ $\sim$130\,\$/1000 CV)
+    \end{itemize}
+  \end{block}
+  \begin{block}{Scénarios volume}
+    100 CV/jour vs 1000 CV/jour : coût global mensuel et \textbf{coût marginal par CV} ; scalabilité linéaire côté API/LLM.
+  \end{block}
+  \textbf{Recommandation visuelle :} tableau « Volume / Coût Cloud / Coût OCR / Coût LLM / Total mensuel ».
+\end{frame}
+
+\begin{frame}{Partie 10 — ROI et gain productivité}
+  \begin{block}{ROI : automatisation vs parsing manuel}
+    \begin{itemize}
+      \item Réduction du temps de saisie manuelle par CV (estimation X min $\rightarrow$ quelques secondes)
+      \item \textbf{Gain temps RH} : volume de CV traités sans intervention manuelle
+      \item \textbf{Impact productivité} : qualification plus rapide des candidats ; données structurées pour la CVthèque et le matching
+    \end{itemize}
+  \end{block}
+  \textbf{Recommandation visuelle :} slide ROI avec « Coût solution » vs « Économie temps RH » (équivalent coût/heure) ; indicateur type « Break-even après X CV/mois ».
+\end{frame}
+
+% ═════════════════════════════════════════════
+\section{Synthèse}
+% ═════════════════════════════════════════════
+
+\begin{frame}{Synthèse des choix techniques}
+  \begin{block}{Architecture retenue}
+    \textbf{OCR (Mistral)} $\rightarrow$ \textbf{LLM (Claude 4.5 Haiku)} $\rightarrow$ \textbf{JSON Schema} ; API industrialisée sur Google Cloud ; POC Svelte pour démonstration.
+  \end{block}
+  \begin{itemize}
+    \item Parsers natifs abandonnés (complexité NP-hard, instabilité)
+    \item OCR central pour robustesse multi-format / multi-langue
+    \item LLM pour structuration JSON sans fine-tuning
+    \item Décision multicritères (Borda/Condorcet) pour OCR et LLM
+    \item Déploiement cloud sécurisé et scalable ; vision CVthèque
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \centering
+  \vfill
+  {\Huge\bfseries Merci}\\[12pt]
+  {\large Questions ?}\\[16pt]
+  {\normalsize Forvis Mazars — Projet Option Data Science \& Digitalisation}
+  \vfill
+\end{frame}
+
+\end{document}
