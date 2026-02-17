@@ -1,0 +1,11 @@
+.git
+.venv
+__pycache__
+*.pyc
+.streamlit
+exports
+ground_truth_database
+pages
+*.db
+*.csv
+*.pdf
