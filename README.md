@@ -17,7 +17,7 @@ Current selected stack (from benchmark exports):
 - `cv_api/`  
   FastAPI implementation of the CV parsing API.
 
-- `app test/`  
+- `poc/`  
   Svelte app to test the API (upload CV → Parse CV → parsed JSON).
 
 - `docs/`  
@@ -31,15 +31,15 @@ Current selected stack (from benchmark exports):
 
 ## How to run each app
 
-From the project root (after `pip install -r requirements.txt` and `npm install` in `app test/` if needed):
+From the project root (after `pip install -r requirements.txt` and `npm install` in `poc/` if needed):
 
 | App | Command | URL |
 |-----|--------|-----|
 | **API** (FastAPI) | `./api` or `./run_api.sh` | http://localhost:8080 — docs: http://localhost:8080/docs |
-| **App test** (Svelte) | `cd "app test" && npm run dev` | http://localhost:5173 (needs API on 8080) |
+| **POC** (Svelte) | `cd poc && npm run dev` | http://localhost:5173 (needs API on 8080) |
 | **Benchmark** (Streamlit) | `streamlit run app.py` | http://localhost:8501 |
 
-Quick start: run `./api`, then in another terminal `cd "app test" && npm run dev` to try the API from the UI.
+Quick start: run `./api`, then in another terminal `cd poc && npm run dev` to try the API from the UI.
 
 ## API Endpoints
 
